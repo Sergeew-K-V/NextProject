@@ -1,10 +1,8 @@
 import { NextPage } from 'next'
 import { URL_POSTS } from '../../contstans/URLS'
-import IPostsProp from '../../interfaces/IPostsProp'
-import PostParams from '../../types/PostParamType'
-import PostType from '../../types/PostType'
+import { PostParamsType, PostsPropType, PostType } from '../../types/PostTypes'
 
-const Post: NextPage<IPostsProp> = ({ post }) => {
+const Post: NextPage<PostsPropType> = ({ post }) => {
   return (
     <div>
       <h2>{post.id}</h2>
@@ -27,7 +25,7 @@ export async function getStaticPaths() {
   return { paths, fallback: false }
 }
 
-export async function getStaticProps({ params }: PostParams) {
+export async function getStaticProps({ params }: PostParamsType) {
   console.log('params', params)
   const res = await fetch(`${URL_POSTS}/${params.id}`)
   console.log('res', res)

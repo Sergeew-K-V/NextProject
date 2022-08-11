@@ -1,9 +1,8 @@
 import { NextPage } from 'next'
 import { URL_POSTS } from '../../contstans/URLS'
-import IPostProp from '../../interfaces/IPostProp'
-import PostType from '../../types/PostType'
+import { PostPropType, PostType } from '../../types/PostTypes'
 
-const Post: NextPage<IPostProp> = ({ posts }) => {
+const Post: NextPage<PostPropType> = ({ posts }) => {
   return (
     <div>
       <h1>Posts Page</h1>
