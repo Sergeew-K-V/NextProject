@@ -12,12 +12,9 @@ const Post: NextPage<PostsPropType> = ({ post }) => {
   )
 }
 
-export default Post
-
 export async function getStaticPaths() {
   const res = await fetch(URL_POSTS)
   const posts: PostType[] = await res.json()
-
   const paths = posts.map((post) => ({
     params: { id: post.id.toString() },
   }))
@@ -26,11 +23,10 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }: PostParamsType) {
-  console.log('params', params)
   const res = await fetch(`${URL_POSTS}/${params.id}`)
-  console.log('res', res)
   const post = await res.json()
-  console.log('post', post)
 
   return { props: { post } }
 }
+
+export default Post
