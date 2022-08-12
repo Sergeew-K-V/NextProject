@@ -23,7 +23,8 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }: PostParamsType) {
-  const res = await fetch(`${URL_POSTS}/${params.id}`)
+  const param = `/${params.id}`
+  const res = await fetch(URL_POSTS + param)
   const post = await res.json()
 
   return { props: { post } }
