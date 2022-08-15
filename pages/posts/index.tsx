@@ -20,8 +20,8 @@ const Post: NextPage<PostPropType> = ({ posts }) => {
   )
 }
 
-export async function getServerSideProps() {
-  const res = await fetch(URL_POSTS + '?_limit=20')
+export async function getStaticProps() {
+  const res = await fetch(URL_POSTS + '?_limit=5')
   const posts: PostType[] = await res.json()
   return {
     props: {
