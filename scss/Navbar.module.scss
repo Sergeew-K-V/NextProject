@@ -1,0 +1,15 @@
+.header {
+  background-color: #000000;
+  color: #ffffff;
+
+  height: 7.5%;
+  .content {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .logo {
+      font-size: 2rem;
+    }
+  }
+}
