@@ -1,6 +1,6 @@
 import styles from '../../scss/Navbar.module.scss'
-import Container from '../Layouts/Container'
-import Nav from '../Nav/Nav'
+import Container from './Layouts/Container'
+import Nav from './Nav'
 
 const Navbar = () => {
   return (

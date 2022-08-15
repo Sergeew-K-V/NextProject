@@ -1,5 +1,5 @@
 import styles from '../../scss/Footer.module.scss'
-import Container from '../Layouts/Container'
+import Container from './Layouts/Container'
 const Footer = () => {
   return (
     <footer className={styles.footer}>
