@@ -1,22 +1,25 @@
 import { NextPage } from 'next'
+import Container from '../../components/Layouts/Container'
 import { URL_POSTS } from '../../contstans/URLS'
 import { PostPropType, PostType } from '../../types/PostTypes'
 
 const Post: NextPage<PostPropType> = ({ posts }) => {
   return (
-    <div>
-      <h1>Posts Page</h1>
+    <Container>
       <div>
-        <ul>
-          {posts.map((post: PostType) => (
-            <li key={post.id}>
-              <h4>{post.title}</h4> {post.body}
-              <hr />
-            </li>
-          ))}
-        </ul>
+        <h1>Posts Page</h1>
+        <div>
+          <ul>
+            {posts.map((post: PostType) => (
+              <li key={post.id}>
+                <h4>{post.title}</h4> {post.body}
+                <hr />
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-    </div>
+    </Container>
   )
 }
 
