@@ -1,9 +1,18 @@
 import { NextPage } from 'next'
+import { useRouter } from 'next/router'
 import Container from '../../components/Layouts/Container'
 import { URL_POSTS } from '../../constants/URLS'
+import { ParentPath } from '../../helpers'
 import { PostParamsType, PostsPropType, PostType } from '../../types/PostTypes'
 
 const Post: NextPage<PostsPropType> = ({ post }) => {
+  const router = useRouter()
+
+  const onClickHandler = (): void => {
+    const resultPath = ParentPath(router.asPath, router.query.id?.toString())
+    router.push(resultPath)
+  }
+
   return (
     <Container>
       <div>
@@ -22,6 +31,7 @@ const Post: NextPage<PostsPropType> = ({ post }) => {
           `}
         </style>
       </div>
+      <button onClick={onClickHandler}>Back to all posts</button>
     </Container>
   )
 }
