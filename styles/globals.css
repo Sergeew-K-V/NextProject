@@ -27,9 +27,17 @@ a {
 }
 @font-face {
   font-family: 'Playfair Display';
-  src: local('Playfair Display'),
-    url('../assets/fonts/PlayfairDisplay-Regular.ttf') format('truetype');
+  src: local('Playfair Display'), url('/fonts/PlayfairDisplay-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
+}
+hr {
+  border-color: #000000;
+}
+li {
+  list-style: none;
+}
+ul {
+  padding: 0;
 }
