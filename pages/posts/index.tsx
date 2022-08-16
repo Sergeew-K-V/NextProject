@@ -1,6 +1,7 @@
 import { NextPage } from 'next'
 import Container from '../../components/Layouts/Container'
-import { URL_POSTS } from '../../contstans/URLS'
+import { REQUEST_LIMIT } from '../../constants/constants'
+import { URL_POSTS } from '../../constants/URLS'
 import { PostPropType, PostType } from '../../types/PostTypes'
 
 const Post: NextPage<PostPropType> = ({ posts }) => {
@@ -19,12 +20,19 @@ const Post: NextPage<PostPropType> = ({ posts }) => {
           </ul>
         </div>
       </div>
+      <style jsx>
+        {`
+          h4 {
+            text-transform: uppercase;
+          }
+        `}
+      </style>
     </Container>
   )
 }
 
 export async function getStaticProps() {
-  const res = await fetch(URL_POSTS + '?_limit=5')
+  const res = await fetch(URL_POSTS + REQUEST_LIMIT)
   const posts: PostType[] = await res.json()
   return {
     props: {

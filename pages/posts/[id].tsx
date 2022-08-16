@@ -1,14 +1,28 @@
 import { NextPage } from 'next'
-import { URL_POSTS } from '../../contstans/URLS'
+import Container from '../../components/Layouts/Container'
+import { URL_POSTS } from '../../constants/URLS'
 import { PostParamsType, PostsPropType, PostType } from '../../types/PostTypes'
 
 const Post: NextPage<PostsPropType> = ({ post }) => {
   return (
-    <div>
-      <h2>{post.id}</h2>
-      <h3>{post.title}</h3>
-      <p>{post.body}</p>
-    </div>
+    <Container>
+      <div>
+        <h2>{post.id}</h2>
+        <h3>{post.title}</h3>
+        <p>{post.body}</p>
+        <style jsx>
+          {`
+            h3 {
+              font-size: 2rem;
+              text-transform: uppercase;
+            }
+            p {
+              font-size: 1.5rem;
+            }
+          `}
+        </style>
+      </div>
+    </Container>
   )
 }
 
