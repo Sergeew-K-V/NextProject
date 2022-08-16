@@ -1,9 +1,12 @@
 import type { NextPage } from 'next'
+import Container from '../components/Layouts/Container'
 
 const Home: NextPage = () => {
   return (
     <div>
-      <h1>Home Page</h1>
+      <Container>
+        <h1>Home Page</h1>
+      </Container>
     </div>
   )
 }
