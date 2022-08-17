@@ -27,7 +27,9 @@ const Post: NextPage<PostsPropType> = ({ post }) => {
             width: 36px;
             height: 36px;
             text-align: center;
-            display: inline-block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border: 2px solid #000000;
             border-radius: 50%;
             margin: 1rem 0;
