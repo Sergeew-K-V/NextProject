@@ -1,12 +1,12 @@
 import { NextPage } from 'next'
 import { ReactElement } from 'react'
-import Container from '../../components/Layouts/Container'
+import ContainerBig from '../../components/Layouts/ContainerBig'
 
 const About: NextPage = (): ReactElement => {
   return (
-    <Container>
+    <ContainerBig>
       <h1>About Page</h1>
-    </Container>
+    </ContainerBig>
   )
 }
 

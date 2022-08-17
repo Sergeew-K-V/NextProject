@@ -1,7 +1,7 @@
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import React, { ChangeEvent, useState } from 'react'
-import Container from '../../components/Layouts/Container'
+import ContainerBig from '../../components/Layouts/ContainerBig'
 import { REQUEST_LIMIT } from '../../constants/constants'
 import { URL_POSTS } from '../../constants/URLS'
 import { PostPropType, PostType } from '../../types/PostTypes'
@@ -20,7 +20,7 @@ const Post: NextPage<PostPropType> = ({ posts }) => {
   }
 
   return (
-    <Container>
+    <ContainerBig>
       <div>
         <h1>Posts Page</h1>
         <div>
@@ -46,7 +46,7 @@ const Post: NextPage<PostPropType> = ({ posts }) => {
           }
         `}
       </style>
-    </Container>
+    </ContainerBig>
   )
 }
 
