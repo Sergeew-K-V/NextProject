@@ -1,6 +1,6 @@
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import Container from '../../components/Layouts/Container'
+import ContainerBig from '../../components/Layouts/ContainerBig'
 import { URL_POSTS } from '../../constants/URLS'
 import { getParentPath } from '../../helpers'
 import { PostParamsType, PostsPropType, PostType } from '../../types/PostTypes'
@@ -14,25 +14,47 @@ const Post: NextPage<PostsPropType> = ({ post }) => {
   }
 
   return (
-    <Container>
+    <ContainerBig>
       <div>
         <h2>{post.id}</h2>
         <h3>{post.title}</h3>
         <p>{post.body}</p>
-        <style jsx>
-          {`
-            h3 {
-              font-size: 2rem;
-              text-transform: uppercase;
-            }
-            p {
-              font-size: 1.5rem;
-            }
-          `}
-        </style>
       </div>
       <button onClick={onClickHandler}>Back to all posts</button>
-    </Container>
+      <style jsx>
+        {`
+          h2 {
+            width: 36px;
+            height: 36px;
+            text-align: center;
+            display: inline-block;
+            border: 2px solid #000000;
+            border-radius: 50%;
+            margin: 1rem 0;
+          }
+          h3 {
+            font-size: 2rem;
+            text-transform: uppercase;
+            margin: 1rem 0;
+          }
+          p {
+            font-size: 1.5rem;
+          }
+          button {
+            height: 32px;
+            text-transform: uppercase;
+            background-color: #000000;
+            color: #ffffff;
+            border: 0;
+          }
+          @media screen and (max-width: 500px) {
+            h3 {
+              font-size: 1.5rem;
+            }
+          }
+        `}
+      </style>
+    </ContainerBig>
   )
 }
 

@@ -1,7 +1,7 @@
 .header {
   background-color: #000000;
   color: #ffffff;
-
+  min-height: 68px;
   height: 7.5%;
   .content {
     height: 100%;
@@ -10,6 +10,15 @@
     align-items: center;
     .logo {
       font-size: 2rem;
+    }
+  }
+}
+@media screen and (max-width: 500px) {
+  .header {
+    .content {
+      .logo {
+        font-size: 1.3rem;
+      }
     }
   }
 }
