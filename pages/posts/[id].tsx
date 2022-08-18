@@ -16,7 +16,9 @@ const Post: NextPage<PostsPropType> = ({ post }) => {
   return (
     <ContainerBig>
       <div>
-        <h2>{post.id}</h2>
+        <h2>
+          <span>{post.id}</span>
+        </h2>
         <h3>{post.title}</h3>
         <p>{post.body}</p>
       </div>
@@ -34,6 +36,9 @@ const Post: NextPage<PostsPropType> = ({ post }) => {
             border-radius: 50%;
             margin: 1rem 0;
           }
+          span {
+            transform: translateY(-0.25rem);
+          }
           h3 {
             font-size: 2rem;
             text-transform: uppercase;
@@ -43,6 +48,7 @@ const Post: NextPage<PostsPropType> = ({ post }) => {
             font-size: 1.5rem;
           }
           button {
+            cursor: pointer;
             height: 32px;
             text-transform: uppercase;
             background-color: #000000;
