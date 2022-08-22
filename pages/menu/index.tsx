@@ -1,4 +1,5 @@
 import { NextPage } from 'next'
+import { URL_SERVER } from '../../constants/URLS'
 import { MenuProps } from '../../types/MenuTypes'
 
 const Menu: NextPage<MenuProps> = ({ data }) => {
@@ -6,9 +7,9 @@ const Menu: NextPage<MenuProps> = ({ data }) => {
 }
 
 export default Menu
-// need deploy server - get url - paste here url - push this
+
 export async function getStaticProps() {
-  const responce = await fetch('http://localhost:8080/')
+  const responce = await fetch(URL_SERVER)
   const data = await responce.json()
 
   return {
