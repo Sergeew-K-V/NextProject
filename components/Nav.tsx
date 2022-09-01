@@ -22,6 +22,11 @@ const Nav: FC<NavProps> = ({ isOpen, setIsOpen }: NavProps) => {
             <a>Posts</a>
           </Link>
         </div>
+        <div className={styles.nav__item}>
+          <Link href='/menu'>
+            <a>Menu</a>
+          </Link>
+        </div>
       </div>
       <div
         className={`${styles.burger} ${isOpen ? styles.open : ''}`}
