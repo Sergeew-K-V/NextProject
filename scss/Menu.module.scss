@@ -1,0 +1,43 @@
+.menu {
+  h2 {
+    font-size: 2rem;
+  }
+  &__item {
+    max-width: 8rem;
+    max-height: 2rem;
+    height: 5vh;
+    width: 26vw;
+    margin: 0 0.5rem;
+  }
+  &__btn {
+    background-color: #000;
+    border: 1px solid #fff;
+    color: #fff;
+    cursor: pointer;
+  }
+  .content {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 0 10rem;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .menu {
+    h2 {
+    }
+    &__item {
+      margin: 0rem;
+    }
+    &__select {
+      margin: 0 0.25rem;
+    }
+    &__btn {
+    }
+    .content {
+      flex-direction: column;
+      flex-wrap: wrap;
+      margin: 0 0 10rem;
+    }
+  }
+}

@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { useState } from 'react'
 import styles from '../scss/Navbar.module.scss'
 import Container from './Layouts/Container'
@@ -10,7 +11,11 @@ const Navbar = () => {
     <header className={styles.header}>
       <Container>
         <div className={styles.content}>
-          <div className={styles.logo}>Next Site</div>
+          <Link href='/'>
+            <a>
+              <div className={styles.logo}>Next Site</div>
+            </a>
+          </Link>
           <Nav isOpen={isOpen} setIsOpen={setIsOpen} />
         </div>
       </Container>
