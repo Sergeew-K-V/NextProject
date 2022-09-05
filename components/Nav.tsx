@@ -27,11 +27,13 @@ const Nav: FC<NavProps> = ({ isOpen, setIsOpen }: NavProps) => {
             <a>Menu</a>
           </Link>
         </div>
+        <div className={styles.nav__item}>
+          <Link href='/crypto'>
+            <a>CRYPTO</a>
+          </Link>
+        </div>
       </div>
-      <div
-        className={`${styles.burger} ${isOpen ? styles.open : ''}`}
-        onClick={() => setIsOpen(!isOpen)}
-      >
+      <div className={`${styles.burger} ${isOpen ? styles.open : ''}`} onClick={() => setIsOpen(!isOpen)}>
         <div></div>
         <div></div>
         <div></div>
