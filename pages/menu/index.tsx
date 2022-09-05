@@ -3,7 +3,7 @@ import { SyntheticEvent, useState } from 'react'
 import ContainerBig from '../../components/Layouts/ContainerBig'
 import Product from '../../components/Product'
 import { DEFAULT_CATEGORY } from '../../constants'
-import { URL_SERVER } from '../../constants/URLS'
+import { URL_SERVER_NEW } from '../../constants/URLS'
 import styles from '../../scss/Menu.module.scss'
 
 const Menu: NextPage<any> = ({ sandwiches }: { sandwiches: Array<any> }) => {
@@ -42,7 +42,7 @@ const Menu: NextPage<any> = ({ sandwiches }: { sandwiches: Array<any> }) => {
 export default Menu
 
 export async function getStaticProps() {
-  const responce = await fetch(URL_SERVER)
+  const responce = await fetch(URL_SERVER_NEW)
   const data = await responce.json()
   const menu: Array<any> = data.menu
   const sandwiches = menu.filter((el) => el.category === 'sandwiches')
