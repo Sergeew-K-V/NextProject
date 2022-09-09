@@ -39,6 +39,8 @@
 
     margin: 0 0.5rem;
     opacity: 0;
+    transform: translateY(-3rem);
+    transition: transform 0.5s ease-in-out 0.3s;
     animation: fade-out 0.3s ease-in-out;
     &__item {
       margin: 0 0.5rem;
@@ -51,6 +53,8 @@
     }
 
     &.open {
+      transition: transform 0s ease-in-out;
+      transform: translateY(0rem);
       opacity: 1;
       animation: fade-in 0.5s ease-in-out;
     }
