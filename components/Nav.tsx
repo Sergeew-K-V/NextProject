@@ -9,29 +9,29 @@ const Nav: FC<NavProps> = ({ isOpen, setIsOpen }: NavProps) => {
   return (
     <div className={styles.navigation}>
       <div className={`${styles.nav} ${isOpen ? styles.open : ''}`}>
-        <div className={styles.nav__item} onClick={CloseMenu}>
+        <div className={styles.nav__item}>
           <Link href='/'>
-            <a>Home</a>
+            <a onClick={CloseMenu}>Home</a>
           </Link>
         </div>
-        <div className={styles.nav__item} onClick={CloseMenu}>
+        <div className={styles.nav__item}>
           <Link href='/about'>
-            <a>About</a>
+            <a onClick={CloseMenu}>About</a>
           </Link>
         </div>
-        <div className={styles.nav__item} onClick={CloseMenu}>
+        <div className={styles.nav__item}>
           <Link href='/posts'>
-            <a>Posts</a>
+            <a onClick={CloseMenu}>Posts</a>
           </Link>
         </div>
-        <div className={styles.nav__item} onClick={CloseMenu}>
+        <div className={styles.nav__item}>
           <Link href='/menu'>
-            <a>Menu</a>
+            <a onClick={CloseMenu}>Menu</a>
           </Link>
         </div>
-        <div className={styles.nav__item} onClick={CloseMenu}>
+        <div className={styles.nav__item}>
           <Link href='/crypto'>
-            <a>CRYPTO</a>
+            <a onClick={CloseMenu}>CRYPTO</a>
           </Link>
         </div>
       </div>
