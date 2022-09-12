@@ -22,7 +22,11 @@
     margin: 0 0 10rem;
   }
 }
-
+@media screen and (max-width: 900px) {
+  .content {
+    justify-content: center;
+  }
+}
 @media screen and (max-width: 450px) {
   .menu {
     h2 {
