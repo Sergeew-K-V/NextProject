@@ -41,9 +41,11 @@ const Menu: NextPage<any> = ({ sandwiches }: { sandwiches: Array<any> }) => {
           Show
         </button>
         <div className={styles.content}>
-          {products.map((el) => {
-            return <Product key={el.id} name={el.name} price={el.price} description={el.description}></Product>
-          })}
+          {products !== undefined
+            ? products.map((el) => {
+                return <Product key={el.id} name={el.name} price={el.price} description={el.description}></Product>
+              })
+            : ''}
         </div>
       </div>
     </ContainerBig>
