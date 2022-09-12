@@ -6,6 +6,7 @@
     max-width: 8rem;
     max-height: 2rem;
     height: 5vh;
+    min-height: 32px;
     width: 26vw;
     margin: 0 0.5rem;
   }
@@ -21,7 +22,11 @@
     margin: 0 0 10rem;
   }
 }
-
+@media screen and (max-width: 900px) {
+  .content {
+    justify-content: center;
+  }
+}
 @media screen and (max-width: 450px) {
   .menu {
     h2 {
