@@ -24,7 +24,7 @@ const Menu: NextPage<any> = ({ sandwiches }: { sandwiches: Array<any> }) => {
     const data = await responce.json()
     setProducts(data.menu.filter((el: any) => el.category === category))
   }
-  console.log(1)
+
   return (
     <ContainerBig>
       <div className={styles.menu}>

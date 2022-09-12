@@ -28,12 +28,14 @@ const Post: NextPage<PostPropType> = ({ posts }) => {
             <button onClick={onClickHandler}>Show me</button>
           </div>
           <ul>
-            {posts.map((post: PostType) => (
-              <li key={post.id}>
-                <h4>{post.title}</h4> {post.body}
-                <hr />
-              </li>
-            ))}
+            {posts !== undefined
+              ? posts.map((post: PostType) => (
+                  <li key={post.id}>
+                    <h4>{post.title}</h4> {post.body}
+                    <hr />
+                  </li>
+                ))
+              : ''}
           </ul>
         </div>
       </div>
