@@ -11,7 +11,9 @@ const Crypto: NextPage<PropsWithChildren> = () => {
 
   const mintHandler = () => {
     console.log(10)
+    console.log(web3)
   }
+
   return (
     <ContainerBig>
       <div className={styles.content}>
