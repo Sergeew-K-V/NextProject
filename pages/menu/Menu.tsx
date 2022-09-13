@@ -20,9 +20,15 @@ const Menu: NextPage<any> = ({ sandwiches }: { sandwiches: Array<any> }) => {
   }
 
   const getNewMenu = async () => {
-    const responce = await fetch(URL_SERVER_NEW)
-    const data = await responce.json()
-    setProducts(data.menu.filter((el: any) => el.category === category))
+    try {
+      const responce = await fetch(URL_SERVER_NEW)
+      if (responce.ok) {
+        const data = await responce.json()
+        setProducts(data.menu.filter((el: any) => el.category === category))
+      }
+    } catch (error) {
+      alert(`Something was going wrong. ${error}`)
+    }
   }
 
   return (
