@@ -26,7 +26,7 @@ const Menu: NextPage<any> = ({ menuProp }: { menuProp: Array<any> }) => {
 
   const getNewMenu = async () => {
     try {
-      const responce = await fetch(URL_SERVER_NEW)
+      const responce = await fetch(URL_SERVER)
       if (responce.ok) {
         const data = await responce.json()
         setProducts(data.menu.filter((el: any) => el.category === category))
