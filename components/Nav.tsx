@@ -20,6 +20,11 @@ const Nav: FC<NavProps> = ({ isOpen, setIsOpen }: NavProps) => {
           </Link>
         </div>
         <div className={styles.nav__item}>
+          <Link href='/labs'>
+            <a onClick={CloseMenu}>Labs</a>
+          </Link>
+        </div>
+        <div className={styles.nav__item}>
           <Link href='/posts'>
             <a onClick={CloseMenu}>Posts</a>
           </Link>

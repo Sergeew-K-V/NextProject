@@ -1,18 +1,20 @@
-import { DEFAULT_CATEGORY } from '../../constants'
-import { URL_SERVER_NEW } from '../../constants/URLS'
+import { URL_SERVER, URL_SERVER_DEV } from '../../constants/URLS'
 import Menu from './Menu'
 
 export default Menu
 
+// IF DEV DEVELOPMENT CHANGE URL FOR SERVER
+// DEV - URL_SERVER_DEV
+// PROD - URL_SERVER
+
 export async function getStaticProps() {
-  const responce = await fetch(URL_SERVER_NEW)
+  const responce = await fetch(URL_SERVER)
   const data = await responce.json()
-  const menu: Array<any> = data.menu
-  const sandwiches = menu.filter((el) => el.category === DEFAULT_CATEGORY)
+  const menuProp: Array<any> = data.menu
 
   return {
     props: {
-      sandwiches,
+      menuProp,
     },
   }
 }

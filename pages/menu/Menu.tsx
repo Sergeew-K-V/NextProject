@@ -1,16 +1,17 @@
 import { NextPage } from 'next'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ContainerBig from '../../components/Layouts/ContainerBig'
 import Product from '../../components/Product'
 import { DEFAULT_CATEGORY } from '../../constants'
-import { URL_SERVER_NEW } from '../../constants/URLS'
+import { URL_SERVER, URL_SERVER_DEV } from '../../constants/URLS'
 import styles from '../../scss/Menu.module.scss'
 
 //for good practice need to describe the props of sandwiches
-const Menu: NextPage<any> = ({ sandwiches }: { sandwiches: Array<any> }) => {
+const Menu: NextPage<any> = ({ menuProp }: { menuProp: Array<any> }) => {
   const [category, setCategory] = useState<string>(DEFAULT_CATEGORY)
 
-  const [products, setProducts] = useState<Array<any>>(sandwiches)
+  const [menu, setMenu] = useState(menuProp)
+  const [products, setProducts] = useState<Array<any>>()
 
   const btnHandler = () => {
     getNewMenu()
@@ -18,6 +19,10 @@ const Menu: NextPage<any> = ({ sandwiches }: { sandwiches: Array<any> }) => {
   const selectHander = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCategory(e.target.value)
   }
+
+  // IF DEV DEVELOPMENT CHANGE URL FOR SERVER
+  // DEV - URL_SERVER_DEV
+  // PROD - URL_SERVER
 
   const getNewMenu = async () => {
     try {
@@ -30,6 +35,10 @@ const Menu: NextPage<any> = ({ sandwiches }: { sandwiches: Array<any> }) => {
       alert(`Something was going wrong. ${error}`)
     }
   }
+
+  useEffect(() => {
+    setProducts(menu.filter((el) => el.category === DEFAULT_CATEGORY))
+  }, [])
 
   return (
     <ContainerBig>
