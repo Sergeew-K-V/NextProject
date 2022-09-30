@@ -1,6 +1,4 @@
-import { Dispatch, SetStateAction } from 'react'
 import { URL_LABS } from '../constants/URLS'
-import { WeatherData, WeatherGenerator } from '../types/Labs'
 import { useFetch } from './useFetch'
 
 export const useGenerator = () => {
@@ -10,8 +8,6 @@ export const useGenerator = () => {
 
   const GeneratorWeatherData = (
     howManyToGen = 0,
-    weatherData: WeatherData,
-    setWeatherData: Dispatch<SetStateAction<WeatherData>>,
     minTemp = -50,
     maxTemp = 60,
     minPres = 652.5,
@@ -24,13 +20,12 @@ export const useGenerator = () => {
         // const genTemperature = Math.random() * (maxTemp - minTemp) + minTemp
         // const genPressure = Math.random() * (maxPres - minPres) + minPres
         // const genWindSpeed = Math.random() * (maxWindSpeed - minWindSpeed) + minWindSpeed
-        setWeatherData({
-          ...weatherData,
+        const Obj = {
           temperature: Math.random() * (maxTemp - minTemp) + minTemp,
           pressure: Math.random() * (maxPres - minPres) + minPres,
           windSpeed: Math.random() * (maxWindSpeed - minWindSpeed) + minWindSpeed,
-        })
-        const data = request(`${URL_LABS}/weatherdata`, 'POST', { ...weatherData })
+        }
+        request(`${URL_LABS}/weatherdata`, 'POST', Obj)
       }
     } catch (error) {}
   }

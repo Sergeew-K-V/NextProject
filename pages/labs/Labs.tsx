@@ -7,21 +7,21 @@ import { LabsProps, WeatherData } from '../../types/Labs'
 
 const Labs: NextPage<LabsProps> = () => {
   const [howManyToGen, setHowManyToGen] = useState<number>(0)
-  const [weatherData, setWeatherData] = useState<WeatherData>({
-    temperature: 0,
-    pressure: 0,
-    windSpeed: 0,
-  })
+  // const [weatherData, setWeatherData] = useState<WeatherData>({
+  //   temperature: 0,
+  //   pressure: 0,
+  //   windSpeed: 0,
+  // })
 
   const {
     // GenaratorWeather,
     GeneratorWeatherData,
   } = useGenerator()
 
-  const GeneratorHandlerWeatherData = () => {
-    GeneratorWeatherData(howManyToGen, weatherData, setWeatherData)
+  const GeneratorHandlerWeatherData = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault()
+    GeneratorWeatherData(howManyToGen)
   }
-
   return (
     <ContainerBig>
       <Heading>This page for labs works with databases</Heading>
