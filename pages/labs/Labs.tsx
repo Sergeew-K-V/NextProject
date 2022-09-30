@@ -1,33 +1,39 @@
 import { NextPage } from 'next'
 import { ContainerBig } from '../../components/Layouts'
 import styled from 'styled-components'
-
-interface LabsProps {}
+import { useState } from 'react'
+import { useGenerator } from '../../hooks/useGenerator'
+import { LabsProps, WeatherData } from '../../types/Labs'
 
 const Labs: NextPage<LabsProps> = () => {
+  const [howManyToGen, setHowManyToGen] = useState<number>(0)
+  const [weatherData, setWeatherData] = useState<WeatherData>({
+    temperature: 0,
+    pressure: 0,
+    windSpeed: 0,
+  })
+
+  const {
+    // GenaratorWeather,
+    GeneratorWeatherData,
+  } = useGenerator()
+
+  const GeneratorHandlerWeatherData = () => {
+    GeneratorWeatherData(howManyToGen, weatherData, setWeatherData)
+  }
+
   return (
     <ContainerBig>
       <Heading>This page for labs works with databases</Heading>
       <Controlers>
         <Flex>
           <Form>
-            <Title>Title 1</Title>
-            <Input type='text' />
-            <Title>Title 2</Title>
-            <Input type='text' />
+            <Title>Generate weather data</Title>
+            <Input type='number' value={howManyToGen} onChange={(e) => setHowManyToGen(Number(e.target.value))} min={0} />
             <Flex>
-              <Button type='submit'>Send</Button>
-            </Flex>
-          </Form>
-        </Flex>
-        <Flex>
-          <Form>
-            <Title>Title 1</Title>
-            <Input type='' />
-            <Title>Title 2</Title>
-            <Input type='text' />
-            <Flex>
-              <Button type='submit'>Send</Button>
+              <Button type='submit' onClick={GeneratorHandlerWeatherData}>
+                Generate
+              </Button>
             </Flex>
           </Form>
         </Flex>
@@ -57,9 +63,7 @@ const Title = styled.h3`
   margin: 1rem 0;
 `
 
-interface InputProps {}
-
-const Input = styled.input<InputProps>`
+const Input = styled.input`
   width: 80%;
   max-width: 240px;
 `
@@ -70,4 +74,5 @@ const Button = styled.button`
   color: white;
   background-color: #000;
   border: 1px solid #fff;
+  cursor: pointer;
 `
