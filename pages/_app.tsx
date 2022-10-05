@@ -9,7 +9,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     const PROVIDER_URL = process.env.PROVIDER_URL
 
     if (PROVIDER_URL !== undefined) {
-      console.log(12)
+      console.log(1234)
       const web3 = new Web3(PROVIDER_URL)
     }
   }, [])
