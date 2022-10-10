@@ -1,38 +1,29 @@
 import { NextPage } from 'next'
 import { ContainerBig } from '../../components/Layouts'
 import styled from 'styled-components'
-import { useState } from 'react'
-import { useGenerator } from '../../hooks/useGenerator'
-import { LabsProps, WeatherData } from '../../types/Labs'
+import { LabsProps } from '../../types/Labs'
+import { useFetch } from '../../hooks/useFetch'
+import { URL_LABS } from '../../constants/URLS'
 
 const Labs: NextPage<LabsProps> = () => {
-  const [howManyToGen, setHowManyToGen] = useState<number>(0)
-  // const [weatherData, setWeatherData] = useState<WeatherData>({
-  //   temperature: 0,
-  //   pressure: 0,
-  //   windSpeed: 0,
-  // })
+  const { request } = useFetch()
 
-  const {
-    // GenaratorWeather,
-    GeneratorWeatherData,
-  } = useGenerator()
-
-  const GeneratorHandlerWeatherData = (e: React.MouseEvent<HTMLElement>) => {
+  const GeneratorHandlerWeatherData = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
-    GeneratorWeatherData(howManyToGen)
+    const data = await request(`${URL_LABS}/weather?_limit=1000`)
+    console.log(data)
   }
+
   return (
     <ContainerBig>
       <Heading>This page for labs works with databases</Heading>
       <Controlers>
         <Flex>
           <Form>
-            <Title>Generate weather data</Title>
-            <Input type='number' value={howManyToGen} onChange={(e) => setHowManyToGen(Number(e.target.value))} min={0} />
+            <Title>Go to fetch</Title>
             <Flex>
               <Button type='submit' onClick={GeneratorHandlerWeatherData}>
-                Generate
+                FETCH
               </Button>
             </Flex>
           </Form>
