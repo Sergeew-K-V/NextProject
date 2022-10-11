@@ -5,15 +5,17 @@ import { useFetch } from '../../hooks/useFetch'
 import { URL_LABS } from '../../constants/URLS'
 import { useState } from 'react'
 import styled from 'styled-components'
+import WeatherData from '../../components/elements/WeatherData'
 
 const Labs: NextPage<LabsProps> = () => {
   const { request } = useFetch()
   const [requestLimit, setRequestLimit] = useState<number>(0)
+  const [requestFilter, setRequestFilter] = useState<string>('')
   const [weatherData, setWeatherData] = useState<any[] | null>(null)
 
   const GeneratorHandlerWeatherData = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
-    const data = await request(`${URL_LABS}/weather?_limit=${requestLimit}`)
+    const data = await request(`${URL_LABS}/weather?_limit=${requestLimit}&_filter=${requestFilter}`)
     setWeatherData(data)
     console.log(data)
   }
@@ -22,27 +24,55 @@ const Labs: NextPage<LabsProps> = () => {
     <ContainerBig>
       <Heading>This page for labs works with databases</Heading>
       <Controlers>
-        <Flex>
+        <Block>
           <Form>
-            <Title>Go to fetch</Title>
-            <Input type='number' max={10000} min={0} value={requestLimit} onChange={(e) => setRequestLimit(Number(e.target.value))} />
-            <Flex>
+            <Block>
+              <Title>Determinate a limit of data for request</Title>
+              <Input
+                type='number'
+                max={10000}
+                min={0}
+                value={requestLimit}
+                onChange={(e) => setRequestLimit(Number(e.target.value))}
+                placeholder='Max limit is 10000'
+              />
+            </Block>
+            <Block>
+              <Block>
+                <Title>Determinate a filter of data for request</Title>
+                <Select>
+                  <Option value='main'>Main</Option>
+                  <Option value='wind'>Wind</Option>
+                </Select>
+              </Block>
+              <Block>
+                <Input type='text' value={requestFilter} onChange={(e) => setRequestFilter(e.target.value)} placeholder='Write filter here' />
+              </Block>
+            </Block>
+            <Block>
               <Button type='submit' onClick={GeneratorHandlerWeatherData}>
                 Download weather data
               </Button>
-            </Flex>
+            </Block>
           </Form>
-        </Flex>
+        </Block>
       </Controlers>
-      <span>
+      <DashBoard>
         {weatherData
           ? weatherData.map((data, index) => (
-              <div key={index}>
-                {JSON.stringify(data)} <br />
-              </div>
+              <WeatherData
+                key={index}
+                city={data.city.name}
+                country={data.city.country}
+                temp={data.main.temp}
+                temp_min={data.main.temp_min}
+                temp_max={data.main.temp_max}
+                pressure={data.main.pressure}
+                humidity={data.main.humidity}
+              />
             ))
           : "Weather data wasn't download"}
-      </span>
+      </DashBoard>
     </ContainerBig>
   )
 }
@@ -57,9 +87,20 @@ const Heading = styled.h2`
 const Controlers = styled.div`
   display: flex;
 `
+const DashBoard = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 0 5rem;
+`
+interface BlockProps {
+  flexDirection?: string
+  display?: string
+}
 
-const Flex = styled.div`
+const Block = styled.div<BlockProps>`
   flex: 0 1 50%;
+  ${({ display }) => (display ? display : '')};
+  ${({ flexDirection }) => (flexDirection ? flexDirection : '')};
 `
 
 const Form = styled.form``
@@ -72,6 +113,10 @@ const Input = styled.input`
   width: 80%;
   max-width: 240px;
 `
+
+const Select = styled.select``
+
+const Option = styled.option``
 
 const Button = styled.button`
   padding: 0.5rem 2rem;
