@@ -5,10 +5,10 @@ import { useFetch } from '../../hooks/useFetch'
 import { URL_LABS } from '../../constants/URLS'
 import { useState } from 'react'
 import styled from 'styled-components'
-import WeatherData from '../../components/elements/WeatherData'
+import { Loader, WeatherData } from '../../components/elements'
 
 const Labs: NextPage<LabsProps> = () => {
-  const { request } = useFetch()
+  const { request, loading } = useFetch()
   const [requestLimit, setRequestLimit] = useState<number>(0)
   const [requestFilter, setRequestFilter] = useState<string>('')
   const [weatherData, setWeatherData] = useState<any[] | null>(null)
@@ -17,7 +17,6 @@ const Labs: NextPage<LabsProps> = () => {
     e.preventDefault()
     const data = await request(`${URL_LABS}/weather?_limit=${requestLimit}&_filter=${requestFilter}`)
     setWeatherData(data)
-    console.log(data)
   }
 
   return (
@@ -38,15 +37,13 @@ const Labs: NextPage<LabsProps> = () => {
               />
             </Block>
             <Block>
-              <Block>
-                <Title>Determinate a filter of data for request</Title>
+              <Title>Determinate a filter of data for request</Title>
+              <Block display='flex' justifyContent='space-between' margin='0'>
+                <Input type='text' value={requestFilter} onChange={(e) => setRequestFilter(e.target.value)} placeholder='Write filter here' />
                 <Select>
                   <Option value='main'>Main</Option>
                   <Option value='wind'>Wind</Option>
                 </Select>
-              </Block>
-              <Block>
-                <Input type='text' value={requestFilter} onChange={(e) => setRequestFilter(e.target.value)} placeholder='Write filter here' />
               </Block>
             </Block>
             <Block>
@@ -58,20 +55,24 @@ const Labs: NextPage<LabsProps> = () => {
         </Block>
       </Controlers>
       <DashBoard>
-        {weatherData
-          ? weatherData.map((data, index) => (
-              <WeatherData
-                key={index}
-                city={data.city.name}
-                country={data.city.country}
-                temp={data.main.temp}
-                temp_min={data.main.temp_min}
-                temp_max={data.main.temp_max}
-                pressure={data.main.pressure}
-                humidity={data.main.humidity}
-              />
-            ))
-          : "Weather data wasn't download"}
+        {loading ? (
+          <Loader />
+        ) : weatherData ? (
+          weatherData.map((data, index) => (
+            <WeatherData
+              key={index}
+              city={data.city.name}
+              country={data.city.country}
+              temp={data.main.temp}
+              temp_min={data.main.temp_min}
+              temp_max={data.main.temp_max}
+              pressure={data.main.pressure}
+              humidity={data.main.humidity}
+            />
+          ))
+        ) : (
+          "Weather data wasn't download"
+        )}
       </DashBoard>
     </ContainerBig>
   )
@@ -90,20 +91,30 @@ const Controlers = styled.div`
 const DashBoard = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin: 0 0 5rem;
+  height: 500px;
+  overflow-y: scroll;
+  border: 0.2rem solid #000;
 `
 interface BlockProps {
   flexDirection?: string
   display?: string
+  justifyContent?: string
+  margin?: string
 }
 
 const Block = styled.div<BlockProps>`
   flex: 0 1 50%;
-  ${({ display }) => (display ? display : '')};
-  ${({ flexDirection }) => (flexDirection ? flexDirection : '')};
+  ${({ margin }) => (margin ? `margin:${margin}` : 'margin: 0 0.5rem;')};
+  ${({ display }) => (display ? `display:${display}` : '')};
+  ${({ flexDirection }) => (flexDirection ? `flexDirection:${flexDirection}` : '')};
+  ${({ justifyContent }) => (justifyContent ? `justify-content:${justifyContent}` : '')};
 `
 
-const Form = styled.form``
+const Form = styled.form`
+  display: flex;
+  margin: 0 0 1.5rem;
+  align-items: center;
+`
 
 const Title = styled.h3`
   margin: 1rem 0;
@@ -112,9 +123,12 @@ const Title = styled.h3`
 const Input = styled.input`
   width: 80%;
   max-width: 240px;
+  min-height: 25px;
 `
 
-const Select = styled.select``
+const Select = styled.select`
+  min-height: 25px;
+`
 
 const Option = styled.option``
 
