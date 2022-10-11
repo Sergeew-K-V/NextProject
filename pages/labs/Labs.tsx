@@ -94,6 +94,7 @@ const DashBoard = styled.div`
   height: 500px;
   overflow-y: scroll;
   border: 0.2rem solid #000;
+  width: 81.5%;
 `
 interface BlockProps {
   flexDirection?: string
