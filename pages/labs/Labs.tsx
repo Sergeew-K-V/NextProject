@@ -6,10 +6,10 @@ import { URL_LABS } from '../../constants/URLS'
 import { useState } from 'react'
 import { Loader, WeatherData } from '../../components/elements'
 import styled from 'styled-components'
+import { EMPTY_RANGE_LIMIT } from '../../constants'
 
 const Labs: NextPage<LabsProps> = () => {
   const { request, loading } = useFetch()
-  const [requestLimit, setRequestLimit] = useState<number>(0)
   const [requestRangeBottom, setRequestRangeBottom] = useState<number>(0)
   const [requestRangeTop, setRequestRangeTop] = useState<number>(0)
   const [requestFilter, setRequestFilter] = useState<string>('')
@@ -17,7 +17,19 @@ const Labs: NextPage<LabsProps> = () => {
 
   const GeneratorHandlerWeatherData = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
-    const data = await request(`${URL_LABS}/weather?_limit=${requestLimit}&_filter=${requestFilter}`)
+    if (requestRangeTop <= requestRangeBottom && requestRangeTop !== 0) {
+      return alert('Bottom range can`t be more or equal than top range')
+    }
+
+    const data = await request(
+      `${URL_LABS}/weather?${
+        requestRangeBottom === 0 && requestRangeTop === 0
+          ? `_limit=${EMPTY_RANGE_LIMIT}`
+          : requestRangeBottom === 0 && requestRangeTop
+          ? `_limit=${requestRangeTop}`
+          : `_bottomRange=${requestRangeBottom}` + '&' + `_topRange=${requestRangeTop}`
+      }`
+    )
     setWeatherData(data)
     console.log(data)
   }
@@ -29,15 +41,15 @@ const Labs: NextPage<LabsProps> = () => {
         <Block>
           <Form>
             <Block>
-              <Title>Determinate a limit of data for request</Title>
-              <Input type='number' max={10000} min={0} value={requestLimit} onChange={(e) => setRequestLimit(Number(e.target.value))} />
-            </Block>
-            <Block>
               <Title>Determinate a range of data for request</Title>
-              <span>Bottom range</span>
-              <Input type='number' max={250000} min={0} value={requestRangeBottom} onChange={(e) => setRequestRangeBottom(Number(e.target.value))} />
-              <span>Top range</span>
-              <Input type='number' max={250000} min={0} value={requestRangeTop} onChange={(e) => setRequestRangeTop(Number(e.target.value))} />
+              <Block margin='0'>
+                <span>Bottom range</span>
+                <Input type='number' min={0} value={requestRangeBottom} onChange={(e) => setRequestRangeBottom(Number(e.target.value))} />
+              </Block>
+              <Block margin='0'>
+                <span>Top range</span>
+                <Input type='number' min={0} value={requestRangeTop} onChange={(e) => setRequestRangeTop(Number(e.target.value))} />
+              </Block>
             </Block>
             <Block>
               <Title>Determinate a filter of data for request</Title>
@@ -117,7 +129,7 @@ const Block = styled.div<BlockProps>`
 const Form = styled.form`
   display: flex;
   margin: 0 0 1.5rem;
-  align-items: center;
+  align-items: flex-start;
 `
 
 const Title = styled.h3`
