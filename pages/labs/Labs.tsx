@@ -5,7 +5,7 @@ import { URL_LABS } from '../../constants/URLS'
 import { ChangeEvent, useState } from 'react'
 import { Loader, WeatherData } from '../../components/elements'
 import { QueryFilterLogic, QueryRangesLogic } from '../../helpers'
-import { WeatherFilter } from '../../types/Labs'
+import { WeatherFilter } from '../../types/LabsTypes'
 import styled from 'styled-components'
 
 const Labs: NextPage = () => {
