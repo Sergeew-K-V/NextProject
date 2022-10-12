@@ -4,12 +4,14 @@ import { LabsProps } from '../../types/Labs'
 import { useFetch } from '../../hooks/useFetch'
 import { URL_LABS } from '../../constants/URLS'
 import { useState } from 'react'
-import styled from 'styled-components'
 import { Loader, WeatherData } from '../../components/elements'
+import styled from 'styled-components'
 
 const Labs: NextPage<LabsProps> = () => {
   const { request, loading } = useFetch()
   const [requestLimit, setRequestLimit] = useState<number>(0)
+  const [requestRangeBottom, setRequestRangeBottom] = useState<number>(0)
+  const [requestRangeTop, setRequestRangeTop] = useState<number>(0)
   const [requestFilter, setRequestFilter] = useState<string>('')
   const [weatherData, setWeatherData] = useState<any[] | null>(null)
 
@@ -17,6 +19,7 @@ const Labs: NextPage<LabsProps> = () => {
     e.preventDefault()
     const data = await request(`${URL_LABS}/weather?_limit=${requestLimit}&_filter=${requestFilter}`)
     setWeatherData(data)
+    console.log(data)
   }
 
   return (
@@ -27,23 +30,23 @@ const Labs: NextPage<LabsProps> = () => {
           <Form>
             <Block>
               <Title>Determinate a limit of data for request</Title>
-              <Input
-                type='number'
-                max={10000}
-                min={0}
-                value={requestLimit}
-                onChange={(e) => setRequestLimit(Number(e.target.value))}
-                placeholder='Max limit is 10000'
-              />
+              <Input type='number' max={10000} min={0} value={requestLimit} onChange={(e) => setRequestLimit(Number(e.target.value))} />
+            </Block>
+            <Block>
+              <Title>Determinate a range of data for request</Title>
+              <span>Bottom range</span>
+              <Input type='number' max={250000} min={0} value={requestRangeBottom} onChange={(e) => setRequestRangeBottom(Number(e.target.value))} />
+              <span>Top range</span>
+              <Input type='number' max={250000} min={0} value={requestRangeTop} onChange={(e) => setRequestRangeTop(Number(e.target.value))} />
             </Block>
             <Block>
               <Title>Determinate a filter of data for request</Title>
               <Block display='flex' justifyContent='space-between' margin='0'>
-                <Input type='text' value={requestFilter} onChange={(e) => setRequestFilter(e.target.value)} placeholder='Write filter here' />
                 <Select>
                   <Option value='main'>Main</Option>
                   <Option value='wind'>Wind</Option>
                 </Select>
+                <Input type='text' value={requestFilter} onChange={(e) => setRequestFilter(e.target.value)} placeholder='Write filter here' />
               </Block>
             </Block>
             <Block>
