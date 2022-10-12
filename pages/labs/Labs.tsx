@@ -1,19 +1,20 @@
 import { NextPage } from 'next'
 import { ContainerBig } from '../../components/Layouts'
-import { LabsProps } from '../../types/Labs'
 import { useFetch } from '../../hooks/useFetch'
 import { URL_LABS } from '../../constants/URLS'
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { Loader, WeatherData } from '../../components/elements'
+import { QueryFilterLogic, QueryRangesLogic } from '../../helpers'
+import { WeatherFilter } from '../../types/Labs'
 import styled from 'styled-components'
-import { EMPTY_RANGE_LIMIT } from '../../constants'
 
-const Labs: NextPage<LabsProps> = () => {
+const Labs: NextPage = () => {
   const { request, loading } = useFetch()
   const [requestRangeBottom, setRequestRangeBottom] = useState<number>(0)
   const [requestRangeTop, setRequestRangeTop] = useState<number>(0)
-  const [requestFilter, setRequestFilter] = useState<string>('')
   const [weatherData, setWeatherData] = useState<any[] | null>(null)
+  const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(1)
+  const [requestFilterValue, setRequestFilterValue] = useState<string>('')
 
   const GeneratorHandlerWeatherData = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
@@ -21,17 +22,13 @@ const Labs: NextPage<LabsProps> = () => {
       return alert('Bottom range can`t be more or equal than top range')
     }
 
-    const data = await request(
-      `${URL_LABS}/weather?${
-        requestRangeBottom === 0 && requestRangeTop === 0
-          ? `_limit=${EMPTY_RANGE_LIMIT}`
-          : requestRangeBottom === 0 && requestRangeTop
-          ? `_limit=${requestRangeTop}`
-          : `_bottomRange=${requestRangeBottom}` + '&' + `_topRange=${requestRangeTop}`
-      }`
-    )
+    const data = await request(`${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic()}`)
     setWeatherData(data)
     console.log(data)
+  }
+
+  const SelectHandler = (e: ChangeEvent<HTMLSelectElement>) => {
+    setRequestFilterType(Number(e.target.value))
   }
 
   return (
@@ -54,11 +51,20 @@ const Labs: NextPage<LabsProps> = () => {
             <Block>
               <Title>Determinate a filter of data for request</Title>
               <Block display='flex' justifyContent='space-between' margin='0'>
-                <Select>
-                  <Option value='main'>Main</Option>
-                  <Option value='wind'>Wind</Option>
+                <Select value={requestFilterType} onChange={SelectHandler}>
+                  <Option value={WeatherFilter.city}>City</Option>
+                  <Option value={WeatherFilter.temp}>Temp</Option>
+                  <Option value={WeatherFilter.max_temp}>Max Temp</Option>
+                  <Option value={WeatherFilter.min_temp}>Min Temp</Option>
+                  <Option value={WeatherFilter.pressure}>Pressure</Option>
+                  <Option value={WeatherFilter.humidity}>Humidity</Option>
                 </Select>
-                <Input type='text' value={requestFilter} onChange={(e) => setRequestFilter(e.target.value)} placeholder='Write filter here' />
+                <Input
+                  type='text'
+                  value={requestFilterValue}
+                  onChange={(e) => setRequestFilterValue(e.target.value)}
+                  placeholder='Write filter here'
+                />
               </Block>
             </Block>
             <Block>

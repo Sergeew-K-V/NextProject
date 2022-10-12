@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction } from 'react'
 
-type NavProps = {
+export type NavProps = {
   isOpen: boolean
   setIsOpen: Dispatch<SetStateAction<boolean>>
 }
-export default NavProps
