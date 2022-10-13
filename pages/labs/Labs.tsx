@@ -8,12 +8,16 @@ import { QueryFilterLogic, QueryRangesLogic } from '../../helpers'
 import { WeatherFilter } from '../../types/LabsTypes'
 import styled from 'styled-components'
 
-const Labs: NextPage = () => {
+interface LabsProps {
+  preloadWeatherData: any
+}
+
+const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
   const { request, loading } = useFetch()
   const [requestRangeBottom, setRequestRangeBottom] = useState<number>(0)
   const [requestRangeTop, setRequestRangeTop] = useState<number>(0)
-  const [weatherData, setWeatherData] = useState<any[] | null>(null)
-  const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(1)
+  const [weatherData, setWeatherData] = useState<any[] | null>(preloadWeatherData)
+  const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(WeatherFilter.city)
   const [requestFilterValue, setRequestFilterValue] = useState<string>('')
 
   const GeneratorHandlerWeatherData = async (e: React.MouseEvent<HTMLElement>) => {
@@ -22,13 +26,15 @@ const Labs: NextPage = () => {
       return alert('Bottom range can`t be more or equal than top range')
     }
 
-    const data = await request(`${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic()}`)
+    const data = await request(
+      `${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(requestFilterType, requestFilterValue)}`
+    )
     setWeatherData(data)
     console.log(data)
   }
 
   const SelectHandler = (e: ChangeEvent<HTMLSelectElement>) => {
-    setRequestFilterType(Number(e.target.value))
+    setRequestFilterType(e.target.value as WeatherFilter)
   }
 
   return (
@@ -53,6 +59,7 @@ const Labs: NextPage = () => {
               <Block display='flex' justifyContent='space-between' margin='0'>
                 <Select value={requestFilterType} onChange={SelectHandler}>
                   <Option value={WeatherFilter.city}>City</Option>
+                  <Option value={WeatherFilter.country}>Country</Option>
                   <Option value={WeatherFilter.temp}>Temp</Option>
                   <Option value={WeatherFilter.max_temp}>Max Temp</Option>
                   <Option value={WeatherFilter.min_temp}>Min Temp</Option>
@@ -150,6 +157,7 @@ const Input = styled.input`
 
 const Select = styled.select`
   min-height: 25px;
+  margin: 0 0.2rem 0 0;
 `
 
 const Option = styled.option``
