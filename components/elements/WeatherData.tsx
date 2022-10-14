@@ -19,11 +19,38 @@ const WeatherData: FC<WeatherDataProps> = ({ city, country, temp, temp_min, temp
           City: {city} || Country: {country}
         </Title>
         <DataInfo>
-          <div>Average temp: {temp ? <ColoredText>{temp} &deg;C</ColoredText> : <ColoredText color='red'>No data</ColoredText>}</div>
-          <div>Min temp: {temp_min ? <ColoredText>{temp_min} &deg;C</ColoredText> : <ColoredText color='red'>No data</ColoredText>}</div>
-          <div>Max_temp: {temp_max ? <ColoredText>{temp_max} &deg;C</ColoredText> : <ColoredText color='red'>No data</ColoredText>}</div>
-          <div>Pressure: {pressure ? <ColoredText>{pressure} мм рт. ст.</ColoredText> : <ColoredText color='red'>No data</ColoredText>}</div>
-          <div>Humidity: {humidity ? <ColoredText>{humidity} %</ColoredText> : <ColoredText color='red'>No data</ColoredText>}</div>
+          <div>
+            Average temp:{' '}
+            {temp !== undefined || temp !== null ? <ColoredText>{temp} &deg;C</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
+          </div>
+          <div>
+            Min temp:{' '}
+            {temp_min !== undefined || temp_min !== null ? (
+              <ColoredText>{temp_min} &deg;C</ColoredText>
+            ) : (
+              <ColoredText color='red'>No data</ColoredText>
+            )}
+          </div>
+          <div>
+            Max_temp:{' '}
+            {temp_max !== undefined || temp_max !== null ? (
+              <ColoredText>{temp_max} &deg;C</ColoredText>
+            ) : (
+              <ColoredText color='red'>No data</ColoredText>
+            )}
+          </div>
+          <div>
+            Pressure:{' '}
+            {pressure !== undefined || pressure !== null ? (
+              <ColoredText>{pressure} мм рт. ст.</ColoredText>
+            ) : (
+              <ColoredText color='red'>No data</ColoredText>
+            )}
+          </div>
+          <div>
+            Humidity:{' '}
+            {humidity !== undefined || humidity !== null ? <ColoredText>{humidity} %</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
+          </div>
         </DataInfo>
       </Flex>
     </Container>

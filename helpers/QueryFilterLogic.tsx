@@ -4,7 +4,7 @@ import { WeatherFilter } from '../types/LabsTypes'
 const QueryFilterLogic = (type: WeatherFilter, value: string | number): string => {
   try {
     if (value && type) {
-      if (type === WeatherFilter.max_temp || type === WeatherFilter.min_temp || type === WeatherFilter.temp) {
+      if (type === WeatherFilter.temp_max || type === WeatherFilter.temp_min || type === WeatherFilter.temp) {
         value = Number(value) + Kelvin
         return `_filterType=${type}&` + `_filterValue=${value}`
       }

@@ -2,8 +2,8 @@ export enum WeatherFilter {
   city = 'city',
   country = 'country',
   temp = 'temp',
-  min_temp = 'min_temp',
-  max_temp = 'max_temp',
+  temp_min = 'temp_min',
+  temp_max = 'temp_max',
   humidity = 'humidity',
   pressure = 'pressure',
 }

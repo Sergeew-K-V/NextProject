@@ -4,8 +4,9 @@ import { useFetch } from '../../hooks/useFetch'
 import { URL_LABS } from '../../constants/URLS'
 import { ChangeEvent, useState } from 'react'
 import { Loader, WeatherData } from '../../components/elements'
-import { QueryFilterLogic, QueryRangesLogic } from '../../helpers'
+import { MaximalInput, MinimalInput, QueryFilterLogic, QueryRangesLogic } from '../../helpers'
 import { WeatherFilter } from '../../types/LabsTypes'
+import { Architect, Layer, Network } from 'synaptic'
 import styled from 'styled-components'
 
 interface LabsProps {
@@ -34,12 +35,21 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     console.log(data)
   }
 
-  const SelectHandler = (e: ChangeEvent<HTMLSelectElement>) => {
-    setRequestFilterType(e.target.value as WeatherFilter)
-  }
+  const NetworkHandler = () => {
+    var inputLayer = new Layer(4)
+    var hiddenLayer = new Layer(6)
+    var outputLayer = new Layer(2)
 
-  const FilterHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setRequestFilterValue(e.target.value)
+    inputLayer.project(hiddenLayer)
+    hiddenLayer.project(outputLayer)
+
+    var myNetwork = new Network({
+      input: inputLayer,
+      hidden: [hiddenLayer],
+      output: outputLayer,
+    })
+
+    const NN = myNetwork.activate([1, 0, 1, 0])
   }
 
   return (
@@ -47,6 +57,7 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
       <Heading>This page for labs works with databases</Heading>
       <Controlers>
         <Block>
+          {/* <button onClick={NetworkHandler}>NN</button> */}
           <Form>
             <Block>
               <Title>Determinate a range of data for request</Title>
@@ -62,19 +73,21 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
             <Block>
               <Title>Determinate a filter of data for request</Title>
               <Block display='flex' justifyContent='space-between' margin='0'>
-                <Select value={requestFilterType} onChange={SelectHandler}>
+                <Select value={requestFilterType} onChange={(e) => setRequestFilterType(e.target.value as WeatherFilter)}>
                   <Option value={WeatherFilter.city}>City</Option>
                   <Option value={WeatherFilter.country}>Country</Option>
                   <Option value={WeatherFilter.temp}>Temp</Option>
-                  <Option value={WeatherFilter.max_temp}>Max Temp</Option>
-                  <Option value={WeatherFilter.min_temp}>Min Temp</Option>
+                  <Option value={WeatherFilter.temp_max}>Temp Max</Option>
+                  <Option value={WeatherFilter.temp_min}>Temp Min</Option>
                   <Option value={WeatherFilter.pressure}>Pressure</Option>
                   <Option value={WeatherFilter.humidity}>Humidity</Option>
                 </Select>
                 <Input
                   type={requestFilterType === WeatherFilter.city || requestFilterType === WeatherFilter.country ? 'text' : 'number'}
                   value={requestFilterValue}
-                  onChange={FilterHandler}
+                  onChange={(e) => setRequestFilterValue(e.target.value)}
+                  min={MinimalInput(requestFilterType)}
+                  max={MaximalInput(requestFilterType)}
                   placeholder='Write filter here'
                 />
               </Block>
@@ -91,9 +104,9 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
         {loading ? (
           <Loader />
         ) : weatherData ? (
-          weatherData.map((data, index) => (
+          weatherData.map((data) => (
             <WeatherData
-              key={index}
+              key={data._id}
               city={data.city.name}
               country={data.city.country}
               temp={data.main.temp}
