@@ -18,7 +18,7 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
   const [requestRangeTop, setRequestRangeTop] = useState<number>(0)
   const [weatherData, setWeatherData] = useState<any[] | null>(preloadWeatherData)
   const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(WeatherFilter.city)
-  const [requestFilterValue, setRequestFilterValue] = useState<string>('')
+  const [requestFilterValue, setRequestFilterValue] = useState<string | number>('')
 
   const GeneratorHandlerWeatherData = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
@@ -29,12 +29,17 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     const data = await request(
       `${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(requestFilterType, requestFilterValue)}`
     )
+
     setWeatherData(data)
     console.log(data)
   }
 
   const SelectHandler = (e: ChangeEvent<HTMLSelectElement>) => {
     setRequestFilterType(e.target.value as WeatherFilter)
+  }
+
+  const FilterHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    setRequestFilterValue(e.target.value)
   }
 
   return (
@@ -67,9 +72,9 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                   <Option value={WeatherFilter.humidity}>Humidity</Option>
                 </Select>
                 <Input
-                  type='text'
+                  type={requestFilterType === WeatherFilter.city || requestFilterType === WeatherFilter.country ? 'text' : 'number'}
                   value={requestFilterValue}
-                  onChange={(e) => setRequestFilterValue(e.target.value)}
+                  onChange={FilterHandler}
                   placeholder='Write filter here'
                 />
               </Block>
