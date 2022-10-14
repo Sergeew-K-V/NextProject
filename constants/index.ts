@@ -3,7 +3,7 @@ export const DEFAULT_CATEGORY = 'sandwiches'
 export const EMPTY_RANGE_LIMIT = 100
 export const Kelvin = 273.15
 
-export const weatherRange = {
+export const WeatherRange = {
   tempMin: -17,
   tempMax: 42,
   pressureMax: 1077,

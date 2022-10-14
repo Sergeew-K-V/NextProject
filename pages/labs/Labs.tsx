@@ -2,11 +2,12 @@ import { NextPage } from 'next'
 import { ContainerBig } from '../../components/Layouts'
 import { useFetch } from '../../hooks/useFetch'
 import { URL_LABS } from '../../constants/URLS'
-import { ChangeEvent, useState } from 'react'
+import { useState } from 'react'
 import { Loader, WeatherData } from '../../components/elements'
 import { MaximalInput, MinimalInput, QueryFilterLogic, QueryRangesLogic } from '../../helpers'
 import { WeatherFilter } from '../../types/LabsTypes'
-import { Architect, Layer, Network } from 'synaptic'
+import { Layer, Network } from 'synaptic'
+import { Normalisation } from '../../helpers/Normalisation'
 import styled from 'styled-components'
 
 interface LabsProps {
@@ -30,18 +31,24 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     if (requestRangeBottom === 0 && requestRangeTop === 0 && requestFilterValue !== '') {
       const data = await request(`${URL_LABS}/weather?${QueryFilterLogic(requestFilterType, requestFilterValue)}`)
       setWeatherData(data)
-      console.log(data)
+      // console.log(data)
       return
     } else {
       const data = await request(
         `${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(requestFilterType, requestFilterValue)}`
       )
       setWeatherData(data)
-      console.log(data)
+      // console.log(data)
       return
     }
   }
-
+  const MyData = () => {
+    if (weatherData !== null) {
+      const mydata = { ...weatherData[0] }
+      const NDATA = Normalisation(mydata)
+      console.log(NDATA)
+    }
+  }
   const NetworkHandler = () => {
     var inputLayer = new Layer(4)
     var hiddenLayer = new Layer(6)
@@ -64,7 +71,7 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
       <Heading>This page for labs works with databases</Heading>
       <Controlers>
         <Block>
-          {/* <button onClick={NetworkHandler}>NN</button> */}
+          <button onClick={MyData}>NN</button>
           <Form>
             <Block>
               <Title>Determinate a range of data for request</Title>
