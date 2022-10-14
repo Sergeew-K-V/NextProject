@@ -27,12 +27,19 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
       return alert('Bottom range can`t be more or equal than top range')
     }
 
-    const data = await request(
-      `${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(requestFilterType, requestFilterValue)}`
-    )
-
-    setWeatherData(data)
-    console.log(data)
+    if (requestRangeBottom === 0 && requestRangeTop === 0 && requestFilterValue !== '') {
+      const data = await request(`${URL_LABS}/weather?${QueryFilterLogic(requestFilterType, requestFilterValue)}`)
+      setWeatherData(data)
+      console.log(data)
+      return
+    } else {
+      const data = await request(
+        `${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(requestFilterType, requestFilterValue)}`
+      )
+      setWeatherData(data)
+      console.log(data)
+      return
+    }
   }
 
   const NetworkHandler = () => {
