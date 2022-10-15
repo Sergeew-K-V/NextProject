@@ -2,11 +2,11 @@ import { NextPage } from 'next'
 import { ContainerBig } from '../../components/Layouts'
 import { useFetch } from '../../hooks/useFetch'
 import { URL_LABS } from '../../constants/URLS'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Loader, WeatherData } from '../../components/elements'
 import { MaximalInput, MinimalInput, QueryFilterLogic, QueryRangesLogic } from '../../helpers'
 import { WeatherFilter } from '../../types/LabsTypes'
-import { Layer, Network } from 'synaptic'
+import { Layer, Network, Architect, Trainer } from 'synaptic'
 import { Normalisation } from '../../helpers/Normalisation'
 import styled from 'styled-components'
 
@@ -19,6 +19,8 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
   const [requestRangeBottom, setRequestRangeBottom] = useState<number>(0)
   const [requestRangeTop, setRequestRangeTop] = useState<number>(0)
   const [weatherData, setWeatherData] = useState<any[] | null>(preloadWeatherData)
+  const [normalData, setNormalData] = useState<Array<any>>([])
+  const [result, setResult] = useState<Array<any>>([])
   const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(WeatherFilter.city)
   const [requestFilterValue, setRequestFilterValue] = useState<string | number>('')
 
@@ -29,41 +31,63 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     }
 
     if (requestRangeBottom === 0 && requestRangeTop === 0 && requestFilterValue !== '') {
-      const data = await request(`${URL_LABS}/weather?${QueryFilterLogic(requestFilterType, requestFilterValue)}`)
+      const data = await request(
+        `${URL_LABS}/weather?${QueryFilterLogic(requestFilterType, requestFilterValue)}`
+      )
       setWeatherData(data)
-      // console.log(data)
       return
     } else {
       const data = await request(
-        `${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(requestFilterType, requestFilterValue)}`
+        `${URL_LABS}/weather?${QueryRangesLogic(
+          requestRangeBottom,
+          requestRangeTop
+        )}${QueryFilterLogic(requestFilterType, requestFilterValue)}`
       )
       setWeatherData(data)
-      // console.log(data)
       return
     }
   }
-  const MyData = () => {
+  useEffect(() => {
     if (weatherData !== null) {
-      const mydata = { ...weatherData[0] }
-      const NDATA = Normalisation(mydata)
-      console.log(NDATA)
+      const temp = weatherData.map((el) => Normalisation(el))
+      setNormalData(temp)
     }
-  }
+  }, [weatherData])
+
+  useEffect(() => {
+    console.log(normalData)
+  }, [normalData])
+
   const NetworkHandler = () => {
-    var inputLayer = new Layer(4)
-    var hiddenLayer = new Layer(6)
-    var outputLayer = new Layer(2)
+    let myNet = new Architect.Perceptron(2, 2, 1)
+    let trainer = new Trainer(myNet)
 
-    inputLayer.project(hiddenLayer)
-    hiddenLayer.project(outputLayer)
+    const trainingOptions = {
+      rate: 0.1,
+      iterations: 20000,
+      error: 0.005,
+    }
+    debugger
 
-    var myNetwork = new Network({
-      input: inputLayer,
-      hidden: [hiddenLayer],
-      output: outputLayer,
+    trainer.trainAsync(normalData, trainingOptions).then((results) => {
+      debugger
+      console.log('done!', results)
     })
+    debugger
+    // var inputLayer = new Layer(4)
+    // var hiddenLayer = new Layer(6)
+    // var outputLayer = new Layer(2)
 
-    const NN = myNetwork.activate([1, 0, 1, 0])
+    // inputLayer.project(hiddenLayer)
+    // hiddenLayer.project(outputLayer)
+
+    // var myNetwork = new Network({
+    //   input: inputLayer,
+    //   hidden: [hiddenLayer],
+    //   output: outputLayer,
+    // })
+
+    // const NN = myNetwork.activate([1, 0, 1, 0])
   }
 
   return (
@@ -71,23 +95,36 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
       <Heading>This page for labs works with databases</Heading>
       <Controlers>
         <Block>
-          <button onClick={MyData}>NN</button>
+          <Button onClick={NetworkHandler}>NN</Button>
           <Form>
             <Block>
               <Title>Determinate a range of data for request</Title>
               <Block margin='0'>
                 <span>Bottom range</span>
-                <Input type='number' min={0} value={requestRangeBottom} onChange={(e) => setRequestRangeBottom(Number(e.target.value))} />
+                <Input
+                  type='number'
+                  min={0}
+                  value={requestRangeBottom}
+                  onChange={(e) => setRequestRangeBottom(Number(e.target.value))}
+                />
               </Block>
               <Block margin='0'>
                 <span>Top range</span>
-                <Input type='number' min={0} value={requestRangeTop} onChange={(e) => setRequestRangeTop(Number(e.target.value))} />
+                <Input
+                  type='number'
+                  min={0}
+                  value={requestRangeTop}
+                  onChange={(e) => setRequestRangeTop(Number(e.target.value))}
+                />
               </Block>
             </Block>
             <Block>
               <Title>Determinate a filter of data for request</Title>
               <Block display='flex' justifyContent='space-between' margin='0'>
-                <Select value={requestFilterType} onChange={(e) => setRequestFilterType(e.target.value as WeatherFilter)}>
+                <Select
+                  value={requestFilterType}
+                  onChange={(e) => setRequestFilterType(e.target.value as WeatherFilter)}
+                >
                   <Option value={WeatherFilter.city}>City</Option>
                   <Option value={WeatherFilter.country}>Country</Option>
                   <Option value={WeatherFilter.temp}>Temp</Option>
@@ -97,7 +134,12 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                   <Option value={WeatherFilter.humidity}>Humidity</Option>
                 </Select>
                 <Input
-                  type={requestFilterType === WeatherFilter.city || requestFilterType === WeatherFilter.country ? 'text' : 'number'}
+                  type={
+                    requestFilterType === WeatherFilter.city ||
+                    requestFilterType === WeatherFilter.country
+                      ? 'text'
+                      : 'number'
+                  }
                   value={requestFilterValue}
                   onChange={(e) => setRequestFilterValue(e.target.value)}
                   min={MinimalInput(requestFilterType)}
@@ -154,7 +196,7 @@ const DashBoard = styled.div`
   height: 500px;
   overflow-y: scroll;
   border: 0.2rem solid #000;
-  width: 81.5%;
+  width: 82.5%;
 `
 interface BlockProps {
   flexDirection?: string
