@@ -7,7 +7,7 @@ import { Loader, WeatherData } from '../../components/elements'
 import { MaximalInput, MinimalInput, QueryFilterLogic, QueryRangesLogic } from '../../helpers'
 import { WeatherFilter } from '../../types/LabsTypes'
 import { Layer, Network, Architect, Trainer } from 'synaptic'
-import { Normalisation } from '../../helpers/Normalisation'
+import { MakeNormalisation } from '../../helpers'
 import styled from 'styled-components'
 
 interface LabsProps {
@@ -49,7 +49,7 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
   }
   useEffect(() => {
     if (weatherData !== null) {
-      const data = weatherData.map((el) => Normalisation(el))
+      const data = weatherData.map((el) => MakeNormalisation(el))
       setNormalData(data)
     }
   }, [weatherData])

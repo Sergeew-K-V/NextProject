@@ -1,6 +1,6 @@
 import { WeatherRange } from '../constants'
 
-export const Normalisation = (obj: any) => {
+export const MakeNormalisation = (obj: any) => {
   // input: pressure:, humidity, output: temp
   const NORMAL_OBJ = {
     // temp_max: obj.main.temp_min / (WeatherRange.tempMax - WeatherRange.tempMin),
