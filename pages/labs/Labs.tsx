@@ -49,8 +49,8 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
   }
   useEffect(() => {
     if (weatherData !== null) {
-      const temp = weatherData.map((el) => Normalisation(el))
-      setNormalData(temp)
+      const data = weatherData.map((el) => Normalisation(el))
+      setNormalData(data)
     }
   }, [weatherData])
 
@@ -67,13 +67,8 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
       iterations: 20000,
       error: 0.005,
     }
-    debugger
-
-    trainer.trainAsync(normalData, trainingOptions).then((results) => {
-      debugger
-      console.log('done!', results)
-    })
-    debugger
+    const temp = trainer.train(normalData, trainingOptions)
+    console.log(myNet)
     // var inputLayer = new Layer(4)
     // var hiddenLayer = new Layer(6)
     // var outputLayer = new Layer(2)
@@ -93,89 +88,91 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
   return (
     <ContainerBig>
       <Heading>This page for labs works with databases</Heading>
-      <Controlers>
-        <Block>
-          <Button onClick={NetworkHandler}>NN</Button>
-          <Form>
-            <Block>
-              <Title>Determinate a range of data for request</Title>
-              <Block margin='0'>
-                <span>Bottom range</span>
-                <Input
-                  type='number'
-                  min={0}
-                  value={requestRangeBottom}
-                  onChange={(e) => setRequestRangeBottom(Number(e.target.value))}
-                />
+      <Block display='flex' flexDirection='row-reverse' justifyContent='space-between' width='100%'>
+        <Controlers>
+          <Block>
+            <Form>
+              <Block>
+                <Title>Determinate a range of data for request</Title>
+                <Block margin='0'>
+                  <div>Bottom range</div>
+                  <Input
+                    type='number'
+                    min={0}
+                    value={requestRangeBottom}
+                    onChange={(e) => setRequestRangeBottom(Number(e.target.value))}
+                  />
+                </Block>
+                <Block margin='0'>
+                  <div>Top range</div>
+                  <Input
+                    type='number'
+                    min={0}
+                    value={requestRangeTop}
+                    onChange={(e) => setRequestRangeTop(Number(e.target.value))}
+                  />
+                </Block>
               </Block>
-              <Block margin='0'>
-                <span>Top range</span>
-                <Input
-                  type='number'
-                  min={0}
-                  value={requestRangeTop}
-                  onChange={(e) => setRequestRangeTop(Number(e.target.value))}
-                />
+              <Block>
+                <Title>Determinate a filter of data for request</Title>
+                <Block display='flex' justifyContent='space-between' margin='0'>
+                  <Select
+                    value={requestFilterType}
+                    onChange={(e) => setRequestFilterType(e.target.value as WeatherFilter)}
+                  >
+                    <Option value={WeatherFilter.city}>City</Option>
+                    <Option value={WeatherFilter.country}>Country</Option>
+                    <Option value={WeatherFilter.temp}>Temp</Option>
+                    <Option value={WeatherFilter.temp_max}>Temp Max</Option>
+                    <Option value={WeatherFilter.temp_min}>Temp Min</Option>
+                    <Option value={WeatherFilter.pressure}>Pressure</Option>
+                    <Option value={WeatherFilter.humidity}>Humidity</Option>
+                  </Select>
+                  <Input
+                    type={
+                      requestFilterType === WeatherFilter.city ||
+                      requestFilterType === WeatherFilter.country
+                        ? 'text'
+                        : 'number'
+                    }
+                    value={requestFilterValue}
+                    onChange={(e) => setRequestFilterValue(e.target.value)}
+                    min={MinimalInput(requestFilterType)}
+                    max={MaximalInput(requestFilterType)}
+                    placeholder='Write filter here'
+                  />
+                </Block>
               </Block>
-            </Block>
-            <Block>
-              <Title>Determinate a filter of data for request</Title>
-              <Block display='flex' justifyContent='space-between' margin='0'>
-                <Select
-                  value={requestFilterType}
-                  onChange={(e) => setRequestFilterType(e.target.value as WeatherFilter)}
-                >
-                  <Option value={WeatherFilter.city}>City</Option>
-                  <Option value={WeatherFilter.country}>Country</Option>
-                  <Option value={WeatherFilter.temp}>Temp</Option>
-                  <Option value={WeatherFilter.temp_max}>Temp Max</Option>
-                  <Option value={WeatherFilter.temp_min}>Temp Min</Option>
-                  <Option value={WeatherFilter.pressure}>Pressure</Option>
-                  <Option value={WeatherFilter.humidity}>Humidity</Option>
-                </Select>
-                <Input
-                  type={
-                    requestFilterType === WeatherFilter.city ||
-                    requestFilterType === WeatherFilter.country
-                      ? 'text'
-                      : 'number'
-                  }
-                  value={requestFilterValue}
-                  onChange={(e) => setRequestFilterValue(e.target.value)}
-                  min={MinimalInput(requestFilterType)}
-                  max={MaximalInput(requestFilterType)}
-                  placeholder='Write filter here'
-                />
+              <Block>
+                <Button type='submit' onClick={GeneratorHandlerWeatherData}>
+                  Download weather data
+                </Button>
+                <Button onClick={NetworkHandler}>NN</Button>
               </Block>
-            </Block>
-            <Block>
-              <Button type='submit' onClick={GeneratorHandlerWeatherData}>
-                Download weather data
-              </Button>
-            </Block>
-          </Form>
-        </Block>
-      </Controlers>
-      <DashBoard>
-        {loading ? (
-          <Loader />
-        ) : weatherData ? (
-          weatherData.map((data) => (
-            <WeatherData
-              key={data._id}
-              city={data.city.name}
-              country={data.city.country}
-              temp={data.main.temp}
-              temp_min={data.main.temp_min}
-              temp_max={data.main.temp_max}
-              pressure={data.main.pressure}
-              humidity={data.main.humidity}
-            />
-          ))
-        ) : (
-          "Weather data wasn't download"
-        )}
-      </DashBoard>
+            </Form>
+          </Block>
+        </Controlers>
+        <DashBoard>
+          {loading ? (
+            <Loader />
+          ) : weatherData ? (
+            weatherData.map((data) => (
+              <WeatherData
+                key={data._id}
+                city={data.city.name}
+                country={data.city.country}
+                temp={data.main.temp}
+                temp_min={data.main.temp_min}
+                temp_max={data.main.temp_max}
+                pressure={data.main.pressure}
+                humidity={data.main.humidity}
+              />
+            ))
+          ) : (
+            "Weather data wasn't download"
+          )}
+        </DashBoard>
+      </Block>
     </ContainerBig>
   )
 }
@@ -188,33 +185,39 @@ const Heading = styled.h2`
 `
 
 const Controlers = styled.div`
+  justify-content: start;
   display: flex;
+  border: 0.2rem solid #000;
+  flex: 0 1 15%;
 `
 const DashBoard = styled.div`
   display: flex;
   flex-wrap: wrap;
-  height: 500px;
+  height: 520px;
   overflow-y: scroll;
   border: 0.2rem solid #000;
-  width: 82.5%;
+  flex: 0 1 81.5%;
 `
 interface BlockProps {
   flexDirection?: string
   display?: string
   justifyContent?: string
   margin?: string
+  width?: string
 }
 
 const Block = styled.div<BlockProps>`
   flex: 0 1 50%;
+  ${({ width }) => (width ? `width:${width}` : '')};
   ${({ margin }) => (margin ? `margin:${margin}` : 'margin: 0 0.5rem;')};
   ${({ display }) => (display ? `display:${display}` : '')};
-  ${({ flexDirection }) => (flexDirection ? `flexDirection:${flexDirection}` : '')};
+  ${({ flexDirection }) => (flexDirection ? `flex-direction:${flexDirection}` : '')};
   ${({ justifyContent }) => (justifyContent ? `justify-content:${justifyContent}` : '')};
 `
 
 const Form = styled.form`
   display: flex;
+  flex-direction: column;
   margin: 0 0 1.5rem;
   align-items: flex-start;
 `
@@ -224,8 +227,7 @@ const Title = styled.h3`
 `
 
 const Input = styled.input`
-  width: 80%;
-  max-width: 240px;
+  max-width: 150px;
   min-height: 25px;
 `
 
