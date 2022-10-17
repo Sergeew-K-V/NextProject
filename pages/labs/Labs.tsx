@@ -137,21 +137,25 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
           {loading ? (
             <Loader />
           ) : weatherData ? (
-            weatherData.map((data) => (
-              <WeatherData
-                key={data._id}
-                city={data.city.name}
-                country={data.city.country}
-                temp={data.main.temp}
-                temp_min={data.main.temp_min}
-                temp_max={data.main.temp_max}
-                pressure={data.main.pressure}
-                humidity={data.main.humidity}
-                lat={data.city.coord.lat}
-                lon={data.city.coord.lon}
-                time={data.time}
-              />
-            ))
+            weatherData.map((data, index) =>
+              index !== 100 && index < 100 ? (
+                <WeatherData
+                  key={data._id}
+                  city={data.city.name}
+                  country={data.city.country}
+                  temp={data.main.temp}
+                  temp_min={data.main.temp_min}
+                  temp_max={data.main.temp_max}
+                  pressure={data.main.pressure}
+                  humidity={data.main.humidity}
+                  lat={data.city.coord.lat}
+                  lon={data.city.coord.lon}
+                  time={data.time}
+                />
+              ) : (
+                ''
+              )
+            )
           ) : (
             "Weather data wasn't download"
           )}
