@@ -2,26 +2,34 @@ import { WeatherRange } from '../constants'
 import { WeatherFilter } from '../types/LabsTypes'
 
 export const MinimalInput = (type: string | number) => {
-  if (type === WeatherFilter.temp || type === WeatherFilter.temp_min || type === WeatherFilter.temp_max) {
-    return WeatherRange.tempMin
+  switch (type) {
+    case WeatherFilter.temp || WeatherFilter.temp_max || WeatherFilter.temp_min:
+      return WeatherRange.tempMin
+    case WeatherFilter.pressure:
+      return WeatherRange.pressureMin
+    case WeatherFilter.humidity:
+      return WeatherRange.humidityMin
+    case WeatherFilter.lon:
+      return WeatherRange.lonMin
+    case WeatherFilter.lat:
+      return WeatherRange.latMin
+    default:
+      return ''
   }
-  if (type === WeatherFilter.pressure) {
-    return WeatherRange.pressureMin
-  }
-  if (type === WeatherFilter.humidity) {
-    return WeatherRange.humidityMin
-  }
-  return ''
 }
 export const MaximalInput = (type: string | number) => {
-  if (type === WeatherFilter.temp || type === WeatherFilter.temp_min || type === WeatherFilter.temp_max) {
-    return WeatherRange.tempMax
+  switch (type) {
+    case WeatherFilter.temp || WeatherFilter.temp_max || WeatherFilter.temp_min:
+      return WeatherRange.tempMax
+    case WeatherFilter.pressure:
+      return WeatherRange.pressureMax
+    case WeatherFilter.humidity:
+      return WeatherRange.humidityMax
+    case WeatherFilter.lon:
+      return WeatherRange.lonMax
+    case WeatherFilter.lat:
+      return WeatherRange.latMax
+    default:
+      return ''
   }
-  if (type === WeatherFilter.pressure) {
-    return WeatherRange.pressureMax
-  }
-  if (type === WeatherFilter.humidity) {
-    return WeatherRange.humidityMax
-  }
-  return ''
 }

@@ -4,6 +4,8 @@ import styled from 'styled-components'
 interface WeatherDataProps {
   city?: string
   country?: string
+  lat?: number
+  lon?: number
   temp?: number
   temp_min?: number
   temp_max?: number
@@ -11,7 +13,7 @@ interface WeatherDataProps {
   humidity?: number
 }
 
-const WeatherData: FC<WeatherDataProps> = ({ city, country, temp, temp_min, temp_max, pressure, humidity }) => {
+const WeatherData: FC<WeatherDataProps> = ({ city, country, temp, temp_min, temp_max, pressure, humidity, lat, lon }) => {
   return (
     <Container>
       <Flex>
@@ -19,6 +21,10 @@ const WeatherData: FC<WeatherDataProps> = ({ city, country, temp, temp_min, temp
           City: {city} || Country: {country}
         </Title>
         <DataInfo>
+          <div>
+            Latitude: {lat !== undefined || lat !== null ? <ColoredText>{lat}</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
+            &nbsp;|| Longitude:{lon !== undefined || lon !== null ? <ColoredText>{lon}</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
+          </div>
           <div>
             Average temp:{' '}
             {temp !== undefined || temp !== null ? <ColoredText>{temp} &deg;C</ColoredText> : <ColoredText color='red'>No data</ColoredText>}

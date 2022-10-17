@@ -10,4 +10,8 @@ export const WeatherRange = {
   pressureMin: 900,
   humidityMin: 0,
   humidityMax: 100,
+  lonMax: 180,
+  lonMin: -180,
+  latMax: 90,
+  latMin: -90,
 }

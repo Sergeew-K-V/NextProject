@@ -2,14 +2,14 @@ import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import ContainerBig from '../../components/Layouts/ContainerBig'
 import { URL_POSTS } from '../../constants/URLS'
-import { getParentPath } from '../../helpers'
+import { GetParentPath } from '../../helpers'
 import { PostParamsType, PostsPropType, PostType } from '../../types/PostTypes'
 
 const Post: NextPage<PostsPropType> = ({ post }) => {
   const router = useRouter()
 
   const onClickHandler = (): void => {
-    const resultPath = getParentPath(router.asPath, router.query.id?.toString())
+    const resultPath = GetParentPath(router.asPath, router.query.id?.toString())
     router.push(resultPath)
   }
 

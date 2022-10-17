@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { Loader, WeatherData } from '../../components/elements'
 import { MaximalInput, MinimalInput, QueryFilterLogic, QueryRangesLogic } from '../../helpers'
 import { WeatherFilter } from '../../types/LabsTypes'
-import { Layer, Network, Architect, Trainer } from 'synaptic'
+import { Architect, Trainer } from 'synaptic'
 import { MakeNormalisation } from '../../helpers'
 import styled from 'styled-components'
 
@@ -15,14 +15,16 @@ interface LabsProps {
 }
 
 const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
-  const { request, loading } = useFetch()
   const [requestRangeBottom, setRequestRangeBottom] = useState<number>(0)
   const [requestRangeTop, setRequestRangeTop] = useState<number>(0)
+  const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(WeatherFilter.city)
+  const [requestFilterValue, setRequestFilterValue] = useState<string | number>('')
+
   const [weatherData, setWeatherData] = useState<any[] | null>(preloadWeatherData)
   const [normalData, setNormalData] = useState<Array<any>>([])
   const [result, setResult] = useState<Array<any>>([])
-  const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(WeatherFilter.city)
-  const [requestFilterValue, setRequestFilterValue] = useState<string | number>('')
+
+  const { request, loading } = useFetch()
 
   const GeneratorHandlerWeatherData = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
@@ -31,17 +33,12 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     }
 
     if (requestRangeBottom === 0 && requestRangeTop === 0 && requestFilterValue !== '') {
-      const data = await request(
-        `${URL_LABS}/weather?${QueryFilterLogic(requestFilterType, requestFilterValue)}`
-      )
+      const data = await request(`${URL_LABS}/weather?${QueryFilterLogic(requestFilterType, requestFilterValue)}`)
       setWeatherData(data)
       return
     } else {
       const data = await request(
-        `${URL_LABS}/weather?${QueryRangesLogic(
-          requestRangeBottom,
-          requestRangeTop
-        )}${QueryFilterLogic(requestFilterType, requestFilterValue)}`
+        `${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(requestFilterType, requestFilterValue)}`
       )
       setWeatherData(data)
       return
@@ -59,7 +56,7 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
   }, [normalData])
 
   const NetworkHandler = () => {
-    let myNet = new Architect.Perceptron(2, 2, 1)
+    let myNet = new Architect.Perceptron(4, 3, 1)
     let trainer = new Trainer(myNet)
 
     const trainingOptions = {
@@ -96,32 +93,21 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                 <Title>Determinate a range of data for request</Title>
                 <Block margin='0'>
                   <div>Bottom range</div>
-                  <Input
-                    type='number'
-                    min={0}
-                    value={requestRangeBottom}
-                    onChange={(e) => setRequestRangeBottom(Number(e.target.value))}
-                  />
+                  <Input type='number' min={0} value={requestRangeBottom} onChange={(e) => setRequestRangeBottom(Number(e.target.value))} />
                 </Block>
                 <Block margin='0'>
                   <div>Top range</div>
-                  <Input
-                    type='number'
-                    min={0}
-                    value={requestRangeTop}
-                    onChange={(e) => setRequestRangeTop(Number(e.target.value))}
-                  />
+                  <Input type='number' min={0} value={requestRangeTop} onChange={(e) => setRequestRangeTop(Number(e.target.value))} />
                 </Block>
               </Block>
               <Block>
                 <Title>Determinate a filter of data for request</Title>
                 <Block display='flex' justifyContent='space-between' margin='0'>
-                  <Select
-                    value={requestFilterType}
-                    onChange={(e) => setRequestFilterType(e.target.value as WeatherFilter)}
-                  >
+                  <Select value={requestFilterType} onChange={(e) => setRequestFilterType(e.target.value as WeatherFilter)}>
                     <Option value={WeatherFilter.city}>City</Option>
                     <Option value={WeatherFilter.country}>Country</Option>
+                    <Option value={WeatherFilter.lat}>Latitude</Option>
+                    <Option value={WeatherFilter.lon}>Longitude</Option>
                     <Option value={WeatherFilter.temp}>Temp</Option>
                     <Option value={WeatherFilter.temp_max}>Temp Max</Option>
                     <Option value={WeatherFilter.temp_min}>Temp Min</Option>
@@ -129,12 +115,7 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                     <Option value={WeatherFilter.humidity}>Humidity</Option>
                   </Select>
                   <Input
-                    type={
-                      requestFilterType === WeatherFilter.city ||
-                      requestFilterType === WeatherFilter.country
-                        ? 'text'
-                        : 'number'
-                    }
+                    type={requestFilterType === WeatherFilter.city || requestFilterType === WeatherFilter.country ? 'text' : 'number'}
                     value={requestFilterValue}
                     onChange={(e) => setRequestFilterValue(e.target.value)}
                     min={MinimalInput(requestFilterType)}
@@ -166,6 +147,8 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                 temp_max={data.main.temp_max}
                 pressure={data.main.pressure}
                 humidity={data.main.humidity}
+                lat={data.city.coord.lat}
+                lon={data.city.coord.lon}
               />
             ))
           ) : (
