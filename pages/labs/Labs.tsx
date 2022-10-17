@@ -9,6 +9,7 @@ import { WeatherFilter } from '../../types/LabsTypes'
 import { Architect, Trainer } from 'synaptic'
 import { MakeNormalisation } from '../../helpers'
 import styled from 'styled-components'
+import Link from 'next/link'
 
 interface LabsProps {
   preloadWeatherData: any
@@ -19,9 +20,12 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
   const [requestRangeTop, setRequestRangeTop] = useState<number>(0)
   const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(WeatherFilter.city)
   const [requestFilterValue, setRequestFilterValue] = useState<string | number>('')
-  // new Date(1554462304*1000)
+
+  const [activePage, setActivePage] = useState()
+
   const [weatherData, setWeatherData] = useState<any[] | null>(preloadWeatherData)
   const [normalData, setNormalData] = useState<Array<any>>([])
+
   const [result, setResult] = useState<Array<any>>([])
 
   const { request, loading } = useFetch()
@@ -51,9 +55,9 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     }
   }, [weatherData])
 
-  useEffect(() => {
-    console.log(normalData)
-  }, [normalData])
+  // useEffect(() => {
+  //   console.log(normalData)
+  // }, [normalData])
 
   const NetworkHandler = () => {
     let myNet = new Architect.Perceptron(4, 3, 1)
@@ -65,26 +69,23 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
       error: 0.005,
     }
     const temp = trainer.train(normalData, trainingOptions)
-    console.log(myNet)
-    // var inputLayer = new Layer(4)
-    // var hiddenLayer = new Layer(6)
-    // var outputLayer = new Layer(2)
-
-    // inputLayer.project(hiddenLayer)
-    // hiddenLayer.project(outputLayer)
-
-    // var myNetwork = new Network({
-    //   input: inputLayer,
-    //   hidden: [hiddenLayer],
-    //   output: outputLayer,
-    // })
-
+    // console.log(myNet)
     // const NN = myNetwork.activate([1, 0, 1, 0])
   }
 
   return (
     <ContainerBig>
       <Heading>This page for labs works with databases</Heading>
+      <Button margin='0 1rem'>
+        <Link href='/labs'>
+          <a>Database</a>
+        </Link>
+      </Button>
+      <Button margin='0 1rem'>
+        <Link href='/labs/neural_network'>
+          <a>Neural Network</a>
+        </Link>
+      </Button>
       <Block display='flex' flexDirection='row-reverse' justifyContent='space-between' width='100%'>
         <Controlers>
           <Block>
@@ -228,9 +229,14 @@ const Select = styled.select`
 
 const Option = styled.option``
 
-const Button = styled.button`
-  padding: 0.5rem 2rem;
-  margin: 1rem 0;
+interface ButtonProps {
+  margin?: string
+  padding?: string
+}
+
+const Button = styled.button<ButtonProps>`
+  ${({ margin }) => (margin ? `margin: ${margin};` : `margin: 1rem 0;`)}
+  ${({ padding }) => (padding ? `padding: ${padding};` : 'padding: 0.5rem 2rem;')}
   color: white;
   background-color: #000;
   border: 1px solid #fff;
