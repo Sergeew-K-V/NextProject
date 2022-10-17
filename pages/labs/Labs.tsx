@@ -19,7 +19,7 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
   const [requestRangeTop, setRequestRangeTop] = useState<number>(0)
   const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(WeatherFilter.city)
   const [requestFilterValue, setRequestFilterValue] = useState<string | number>('')
-
+  // new Date(1554462304*1000)
   const [weatherData, setWeatherData] = useState<any[] | null>(preloadWeatherData)
   const [normalData, setNormalData] = useState<Array<any>>([])
   const [result, setResult] = useState<Array<any>>([])
