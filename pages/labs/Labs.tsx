@@ -149,6 +149,7 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                 humidity={data.main.humidity}
                 lat={data.city.coord.lat}
                 lon={data.city.coord.lon}
+                time={data.time}
               />
             ))
           ) : (
@@ -176,7 +177,7 @@ const Controlers = styled.div`
 const DashBoard = styled.div`
   display: flex;
   flex-wrap: wrap;
-  height: 520px;
+  height: 560px;
   overflow-y: scroll;
   border: 0.2rem solid #000;
   flex: 0 1 81.5%;
@@ -190,7 +191,7 @@ interface BlockProps {
 }
 
 const Block = styled.div<BlockProps>`
-  flex: 0 1 50%;
+  flex: 0 0 50%;
   ${({ width }) => (width ? `width:${width}` : '')};
   ${({ margin }) => (margin ? `margin:${margin}` : 'margin: 0 0.5rem;')};
   ${({ display }) => (display ? `display:${display}` : '')};
@@ -199,6 +200,7 @@ const Block = styled.div<BlockProps>`
 `
 
 const Form = styled.form`
+  width: 100%;
   display: flex;
   flex-direction: column;
   margin: 0 0 1.5rem;
@@ -210,7 +212,8 @@ const Title = styled.h3`
 `
 
 const Input = styled.input`
-  max-width: 150px;
+  padding: 0;
+  width: 10rem;
   min-height: 25px;
 `
 

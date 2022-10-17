@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { FC } from 'react'
 import styles from '../scss/Nav.module.scss'
-import NavProps from '../types/NavProps'
+import { NavProps } from '../types/NavProps'
 
 const Nav: FC<NavProps> = ({ isOpen, setIsOpen }: NavProps) => {
   const CloseMenu = () => setIsOpen(false)
@@ -22,6 +22,11 @@ const Nav: FC<NavProps> = ({ isOpen, setIsOpen }: NavProps) => {
         <div className={styles.nav__item}>
           <Link href='/labs'>
             <a onClick={CloseMenu}>Labs</a>
+          </Link>
+        </div>
+        <div className={styles.nav__item}>
+          <Link href='/java'>
+            <a onClick={CloseMenu}>Java</a>
           </Link>
         </div>
         <div className={styles.nav__item}>

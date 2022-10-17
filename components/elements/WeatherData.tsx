@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import styled from 'styled-components'
 
 interface WeatherDataProps {
@@ -11,9 +11,12 @@ interface WeatherDataProps {
   temp_max?: number
   pressure?: number
   humidity?: number
+  time?: number
 }
 
-const WeatherData: FC<WeatherDataProps> = ({ city, country, temp, temp_min, temp_max, pressure, humidity, lat, lon }) => {
+const WeatherData: FC<WeatherDataProps> = ({ city, country, temp, temp_min, temp_max, pressure, humidity, lat, lon, time }) => {
+  const date = time ? new Date(time * 1000).toString() : null
+
   return (
     <Container>
       <Flex>
@@ -53,6 +56,7 @@ const WeatherData: FC<WeatherDataProps> = ({ city, country, temp, temp_min, temp
               <ColoredText color='red'>No data</ColoredText>
             )}
           </div>
+          <div>Time: {date !== undefined || date !== null ? <ColoredText>{date}</ColoredText> : <ColoredText color='red'>No data</ColoredText>}</div>
           <div>
             Humidity:{' '}
             {humidity !== undefined || humidity !== null ? <ColoredText>{humidity} %</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
