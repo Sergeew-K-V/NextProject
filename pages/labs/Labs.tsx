@@ -5,15 +5,10 @@ import { URL_LABS } from '../../constants/URLS'
 import { useEffect, useState } from 'react'
 import { Loader, WeatherData } from '../../components/elements'
 import { MaximalInput, MinimalInput, QueryFilterLogic, QueryRangesLogic } from '../../helpers'
-import { WeatherFilter } from '../../types/LabsTypes'
+import { LabsProps, Pages, WeatherFilter } from '../../types/LabsTypes'
 import { Architect, Trainer } from 'synaptic'
 import { MakeNormalisation } from '../../helpers'
 import styled from 'styled-components'
-import Link from 'next/link'
-
-interface LabsProps {
-  preloadWeatherData: any
-}
 
 const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
   const [requestRangeBottom, setRequestRangeBottom] = useState<number>(0)
@@ -21,7 +16,7 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
   const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(WeatherFilter.city)
   const [requestFilterValue, setRequestFilterValue] = useState<string | number>('')
 
-  const [activePage, setActivePage] = useState()
+  const [activePage, setActivePage] = useState<Pages>(Pages.NeuralNetworkPage)
 
   const [weatherData, setWeatherData] = useState<any[] | null>(preloadWeatherData)
   const [normalData, setNormalData] = useState<Array<any>>([])
@@ -55,10 +50,6 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     }
   }, [weatherData])
 
-  // useEffect(() => {
-  //   console.log(normalData)
-  // }, [normalData])
-
   const NetworkHandler = () => {
     let myNet = new Architect.Perceptron(4, 3, 1)
     let trainer = new Trainer(myNet)
@@ -73,20 +64,10 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     // const NN = myNetwork.activate([1, 0, 1, 0])
   }
 
-  return (
-    <ContainerBig>
-      <Heading>This page for labs works with databases</Heading>
-      <Button margin='0 1rem'>
-        <Link href='/labs'>
-          <a>Database</a>
-        </Link>
-      </Button>
-      <Button margin='0 1rem'>
-        <Link href='/labs/neural_network'>
-          <a>Neural Network</a>
-        </Link>
-      </Button>
-      <Block display='flex' flexDirection='row-reverse' justifyContent='space-between' width='100%'>
+  const DisplayActivePage = (page:Pages) =>{
+    switch (page) {
+      case Pages.DataBasePage:
+        return<Block display='flex' flexDirection='row-reverse' justifyContent='space-between' width='100%'>
         <Controlers>
           <Block>
             <Form>
@@ -154,7 +135,7 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                   time={data.time}
                 />
               ) : (
-                ''
+                'No data'
               )
             )
           ) : (
@@ -162,11 +143,43 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
           )}
         </DashBoard>
       </Block>
+      case Pages.NeuralNetworkPage:
+      return<>Network Page</>
+      default:
+        return <h1>Select page</h1>
+    }
+  }
+
+  return (
+    <ContainerBig>
+      <Heading>This page for labs works with databases and Neural Network</Heading>
+      <NavigationBlock>
+        <Button margin='0 1rem' onClick={()=>{setActivePage(Pages.DataBasePage)}}>
+          {/* <Link href='/labs'> */}
+            {/* <a>Database</a> */}
+          {/* </Link> */}
+          DataBase
+        </Button>
+        <Button margin='0 1rem'   onClick={()=>{setActivePage(Pages.NeuralNetworkPage)}}>
+          {/* <Link href='/labs/neural_network' > */}
+            {/* <a>Neural Network</a> */}
+          {/* </Link> */}
+          Neural Network
+        </Button>
+      </NavigationBlock>
+      {DisplayActivePage(activePage)}
     </ContainerBig>
   )
 }
 
 export default Labs
+
+const NavigationBlock = styled.div`
+  margin: 1rem 0;
+  display: flex;
+  justify-content: flex-start;
+
+`
 
 const Heading = styled.h2`
   font-size: 2rem;
