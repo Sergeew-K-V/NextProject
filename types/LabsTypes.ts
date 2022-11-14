@@ -9,3 +9,12 @@ export enum WeatherFilter {
   lat = 'lat',
   lon = 'lon',
 }
+
+export interface LabsProps {
+  preloadWeatherData: any
+}
+
+export enum Pages{
+  DataBasePage = "DataBasePage" ,
+  NeuralNetworkPage = "NeuralNetworkPage",
+}
