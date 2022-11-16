@@ -9,8 +9,20 @@ import { LabsProps, Pages, WeatherFilter } from '../../types/LabsTypes'
 import { Architect, Trainer } from 'synaptic'
 import { MakeNormalisation } from '../../helpers'
 import styled from 'styled-components'
+import PayloadWeatherData from '../../components/elements/PayloadWeatherData'
+
+const lat = 47.40465,
+  lon = 40.0489
 
 const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
+  const defaultStateOfNetworkPayload = [
+    { main: { pressure: 762, humidity: 81, temp: 8 }, city: { coord: { lat, lon } } },
+    { main: { pressure: 761, humidity: 76, temp: 6 }, city: { coord: { lat, lon } } },
+    { main: { pressure: 761, humidity: 84, temp: 9 }, city: { coord: { lat, lon } } },
+    { main: { pressure: 761, humidity: 70, temp: 6 }, city: { coord: { lat, lon } } },
+    { main: { pressure: 765, humidity: 80, temp: 7 }, city: { coord: { lat, lon } } },
+  ]
+
   const [requestRangeBottom, setRequestRangeBottom] = useState<number>(0)
   const [requestRangeTop, setRequestRangeTop] = useState<number>(0)
   const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(WeatherFilter.city)
@@ -18,9 +30,12 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
 
   const [activePage, setActivePage] = useState<Pages>(Pages.NeuralNetworkPage)
 
+  const [networkPayload, setNetworkPayload] = useState<Array<any>>(defaultStateOfNetworkPayload)
   const [weatherData, setWeatherData] = useState<any[] | null>(preloadWeatherData)
   const [normalData, setNormalData] = useState<Array<any>>([])
-
+  console.log(weatherData, 'weatherData')
+  console.log(normalData, 'normalData')
+  console.log()
   const [result, setResult] = useState<Array<any>>([])
 
   const { request, loading } = useFetch()
@@ -34,15 +49,12 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     if (requestRangeBottom === 0 && requestRangeTop === 0 && requestFilterValue !== '') {
       const data = await request(`${URL_LABS}/weather?${QueryFilterLogic(requestFilterType, requestFilterValue)}`)
       setWeatherData(data)
-      return
     } else {
-      const data = await request(
-        `${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(requestFilterType, requestFilterValue)}`
-      )
+      const data = await request(`${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(requestFilterType, requestFilterValue)}`)
       setWeatherData(data)
-      return
     }
   }
+
   useEffect(() => {
     if (weatherData !== null) {
       const data = weatherData.map((el) => MakeNormalisation(el))
@@ -59,92 +71,114 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
       iterations: 20000,
       error: 0.005,
     }
-    const temp = trainer.train(normalData, trainingOptions)
-    // console.log(myNet)
-    // const NN = myNetwork.activate([1, 0, 1, 0])
+
+    trainer.train(normalData, trainingOptions)
   }
 
-  const DisplayActivePage = (page:Pages) =>{
+  const DisplayActivePage = (page: Pages) => {
     switch (page) {
       case Pages.DataBasePage:
-        return<Block display='flex' flexDirection='row-reverse' justifyContent='space-between' width='100%'>
-        <Controlers>
-          <Block>
-            <Form>
-              <Block>
-                <Title>Determinate a range of data for request</Title>
-                <Block margin='0'>
-                  <div>Bottom range</div>
-                  <Input type='number' min={0} value={requestRangeBottom} onChange={(e) => setRequestRangeBottom(Number(e.target.value))} />
+        return (
+          <>
+            <Block display='flex' flexDirection='row-reverse' justifyContent='space-between' width='100%'>
+              <Controlers>
+                <Block>
+                  <Form>
+                    <Block>
+                      <Title>Determinate a range of data for request</Title>
+                      <Block margin='0'>
+                        <div>Bottom range</div>
+                        <Input type='number' min={0} value={requestRangeBottom} onChange={(e) => setRequestRangeBottom(Number(e.target.value))} />
+                      </Block>
+                      <Block margin='0'>
+                        <div>Top range</div>
+                        <Input type='number' min={0} value={requestRangeTop} onChange={(e) => setRequestRangeTop(Number(e.target.value))} />
+                      </Block>
+                    </Block>
+                    <Block>
+                      <Title>Determinate a filter of data for request</Title>
+                      <Block display='flex' justifyContent='space-between' margin='0'>
+                        <Select value={requestFilterType} onChange={(e) => setRequestFilterType(e.target.value as WeatherFilter)}>
+                          <Option value={WeatherFilter.city}>City</Option>
+                          <Option value={WeatherFilter.country}>Country</Option>
+                          <Option value={WeatherFilter.lat}>Latitude</Option>
+                          <Option value={WeatherFilter.lon}>Longitude</Option>
+                          <Option value={WeatherFilter.temp}>Temp</Option>
+                          <Option value={WeatherFilter.temp_max}>Temp Max</Option>
+                          <Option value={WeatherFilter.temp_min}>Temp Min</Option>
+                          <Option value={WeatherFilter.pressure}>Pressure</Option>
+                          <Option value={WeatherFilter.humidity}>Humidity</Option>
+                        </Select>
+                        <Input
+                          type={requestFilterType === WeatherFilter.city || requestFilterType === WeatherFilter.country ? 'text' : 'number'}
+                          value={requestFilterValue}
+                          onChange={(e) => setRequestFilterValue(e.target.value)}
+                          min={MinimalInput(requestFilterType)}
+                          max={MaximalInput(requestFilterType)}
+                          placeholder='Write filter here'
+                        />
+                      </Block>
+                    </Block>
+                    <Block>
+                      <Button type='submit' onClick={GeneratorHandlerWeatherData}>
+                        Download weather data
+                      </Button>
+                      <Button onClick={NetworkHandler}>Train Network</Button>
+                    </Block>
+                  </Form>
                 </Block>
-                <Block margin='0'>
-                  <div>Top range</div>
-                  <Input type='number' min={0} value={requestRangeTop} onChange={(e) => setRequestRangeTop(Number(e.target.value))} />
-                </Block>
-              </Block>
-              <Block>
-                <Title>Determinate a filter of data for request</Title>
-                <Block display='flex' justifyContent='space-between' margin='0'>
-                  <Select value={requestFilterType} onChange={(e) => setRequestFilterType(e.target.value as WeatherFilter)}>
-                    <Option value={WeatherFilter.city}>City</Option>
-                    <Option value={WeatherFilter.country}>Country</Option>
-                    <Option value={WeatherFilter.lat}>Latitude</Option>
-                    <Option value={WeatherFilter.lon}>Longitude</Option>
-                    <Option value={WeatherFilter.temp}>Temp</Option>
-                    <Option value={WeatherFilter.temp_max}>Temp Max</Option>
-                    <Option value={WeatherFilter.temp_min}>Temp Min</Option>
-                    <Option value={WeatherFilter.pressure}>Pressure</Option>
-                    <Option value={WeatherFilter.humidity}>Humidity</Option>
-                  </Select>
-                  <Input
-                    type={requestFilterType === WeatherFilter.city || requestFilterType === WeatherFilter.country ? 'text' : 'number'}
-                    value={requestFilterValue}
-                    onChange={(e) => setRequestFilterValue(e.target.value)}
-                    min={MinimalInput(requestFilterType)}
-                    max={MaximalInput(requestFilterType)}
-                    placeholder='Write filter here'
-                  />
-                </Block>
-              </Block>
-              <Block>
-                <Button type='submit' onClick={GeneratorHandlerWeatherData}>
-                  Download weather data
-                </Button>
-                <Button onClick={NetworkHandler}>NN</Button>
-              </Block>
-            </Form>
-          </Block>
-        </Controlers>
-        <DashBoard>
-          {loading ? (
-            <Loader />
-          ) : weatherData ? (
-            weatherData.map((data, index) =>
-              index !== 100 && index < 100 ? (
-                <WeatherData
-                  key={data._id}
-                  city={data.city.name}
-                  country={data.city.country}
-                  temp={data.main.temp}
-                  temp_min={data.main.temp_min}
-                  temp_max={data.main.temp_max}
-                  pressure={data.main.pressure}
-                  humidity={data.main.humidity}
-                  lat={data.city.coord.lat}
-                  lon={data.city.coord.lon}
-                  time={data.time}
-                />
-              ) : (
-                'No data'
-              )
-            )
-          ) : (
-            "Weather data wasn't download"
-          )}
-        </DashBoard>
-      </Block>
+              </Controlers>
+              <DashBoard>
+                {loading ? (
+                  <Loader />
+                ) : weatherData ? (
+                  weatherData.map((data, index) =>
+                    index !== 100 && index < 100 ? (
+                      <WeatherData
+                        key={data._id}
+                        city={data.city.name}
+                        country={data.city.country}
+                        temp={data.main.temp}
+                        temp_min={data.main.temp_min}
+                        temp_max={data.main.temp_max}
+                        pressure={data.main.pressure}
+                        humidity={data.main.humidity}
+                        lat={data.city.coord.lat}
+                        lon={data.city.coord.lon}
+                        time={data.time}
+                      />
+                    ) : (
+                      'No data'
+                    )
+                  )
+                ) : (
+                  "Weather data wasn't download"
+                )}
+              </DashBoard>
+            </Block>
+            <br />
+            <Heading>Network payload</Heading>
+            <Block display='flex' justifyContent='space-between' width='100%'>
+              <DashBoard>
+                {loading ? (
+                  <Loader />
+                ) : networkPayload ? (
+                  networkPayload.map((data, index) =>
+                    index !== 100 && index < 100 ? (
+                      <PayloadWeatherData key={data._id} temp={data.main.temp} pressure={data.main.pressure} humidity={data.main.humidity} lat={data.city.coord.lat} lon={data.city.coord.lon} />
+                    ) : (
+                      'No data'
+                    )
+                  )
+                ) : (
+                  "Weather data wasn't download"
+                )}
+              </DashBoard>
+            </Block>
+          </>
+        )
       case Pages.NeuralNetworkPage:
-      return<>Network Page</>
+        return <>Network Page</>
       default:
         return <h1>Select page</h1>
     }
@@ -154,15 +188,25 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     <ContainerBig>
       <Heading>This page for labs works with databases and Neural Network</Heading>
       <NavigationBlock>
-        <Button margin='0 1rem' onClick={()=>{setActivePage(Pages.DataBasePage)}}>
+        <Button
+          margin='0 1rem'
+          onClick={() => {
+            setActivePage(Pages.DataBasePage)
+          }}
+        >
           {/* <Link href='/labs'> */}
-            {/* <a>Database</a> */}
+          {/* <a>Database</a> */}
           {/* </Link> */}
           DataBase
         </Button>
-        <Button margin='0 1rem'   onClick={()=>{setActivePage(Pages.NeuralNetworkPage)}}>
+        <Button
+          margin='0 1rem'
+          onClick={() => {
+            setActivePage(Pages.NeuralNetworkPage)
+          }}
+        >
           {/* <Link href='/labs/neural_network' > */}
-            {/* <a>Neural Network</a> */}
+          {/* <a>Neural Network</a> */}
           {/* </Link> */}
           Neural Network
         </Button>
@@ -178,7 +222,6 @@ const NavigationBlock = styled.div`
   margin: 1rem 0;
   display: flex;
   justify-content: flex-start;
-
 `
 
 const Heading = styled.h2`
@@ -198,7 +241,7 @@ const DashBoard = styled.div`
   height: 560px;
   overflow-y: scroll;
   border: 0.2rem solid #000;
-  flex: 0 1 81.5%;
+  flex: 0 1 83%;
 `
 interface BlockProps {
   flexDirection?: string
