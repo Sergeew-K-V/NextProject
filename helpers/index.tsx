@@ -1,7 +1,7 @@
 import { GetParentPath } from './GetParentPath'
 import QueryRangesLogic from './QueryRangesLogic'
 import QueryFilterLogic from './QueryFilterLogic'
-import { MakeNormalisation } from './Normalisation'
+import { MakeNormalisation, MakeDeNormalisation } from './Normalisation'
 import { MaximalInput, MinimalInput } from './InputsRange'
 
-export { GetParentPath, QueryRangesLogic, QueryFilterLogic, MaximalInput, MinimalInput, MakeNormalisation }
+export { GetParentPath, QueryRangesLogic, QueryFilterLogic, MaximalInput, MinimalInput, MakeNormalisation, MakeDeNormalisation }

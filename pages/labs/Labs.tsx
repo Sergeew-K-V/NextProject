@@ -7,22 +7,12 @@ import { Loader, WeatherData } from '../../components/elements'
 import { MaximalInput, MinimalInput, QueryFilterLogic, QueryRangesLogic } from '../../helpers'
 import { LabsProps, Pages, WeatherFilter } from '../../types/LabsTypes'
 import { Architect, Trainer } from 'synaptic'
-import { MakeNormalisation } from '../../helpers'
+import { MakeNormalisation, MakeDeNormalisation } from '../../helpers'
 import styled from 'styled-components'
 import PayloadWeatherData from '../../components/elements/PayloadWeatherData'
-
-const lat = 47.40465,
-  lon = 40.0489
+import { defaultStateOfNetworkPayload } from '../../constants'
 
 const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
-  const defaultStateOfNetworkPayload = [
-    { main: { pressure: 762, humidity: 81, temp: 8 }, city: { coord: { lat, lon } } },
-    { main: { pressure: 761, humidity: 76, temp: 6 }, city: { coord: { lat, lon } } },
-    { main: { pressure: 761, humidity: 84, temp: 9 }, city: { coord: { lat, lon } } },
-    { main: { pressure: 761, humidity: 70, temp: 6 }, city: { coord: { lat, lon } } },
-    { main: { pressure: 765, humidity: 80, temp: 7 }, city: { coord: { lat, lon } } },
-  ]
-
   const [requestRangeBottom, setRequestRangeBottom] = useState<number>(0)
   const [requestRangeTop, setRequestRangeTop] = useState<number>(0)
   const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(WeatherFilter.city)
@@ -33,9 +23,7 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
   const [networkPayload, setNetworkPayload] = useState<Array<any>>(defaultStateOfNetworkPayload)
   const [weatherData, setWeatherData] = useState<any[] | null>(preloadWeatherData)
   const [normalData, setNormalData] = useState<Array<any>>([])
-  console.log(weatherData, 'weatherData')
-  console.log(normalData, 'normalData')
-  console.log()
+
   const [result, setResult] = useState<Array<any>>([])
 
   const { request, loading } = useFetch()
@@ -50,11 +38,15 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
       const data = await request(`${URL_LABS}/weather?${QueryFilterLogic(requestFilterType, requestFilterValue)}`)
       setWeatherData(data)
     } else {
-      const data = await request(`${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(requestFilterType, requestFilterValue)}`)
+      const data = await request(
+        `${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(requestFilterType, requestFilterValue)}`
+      )
       setWeatherData(data)
     }
   }
-
+  const selectPayloadData = ({ id }: { id: any }) => {
+    console.log(id, 'current id')
+  }
   useEffect(() => {
     if (weatherData !== null) {
       const data = weatherData.map((el) => MakeNormalisation(el))
@@ -73,6 +65,12 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     }
 
     trainer.train(normalData, trainingOptions)
+  }
+
+  const UpdateHandler = async (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault()
+    const data = await request(`${URL_LABS}/weather`, 'PUT')
+    console.log(data, 'put request')
   }
 
   const DisplayActivePage = (page: Pages) => {
@@ -123,7 +121,6 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                       <Button type='submit' onClick={GeneratorHandlerWeatherData}>
                         Download weather data
                       </Button>
-                      <Button onClick={NetworkHandler}>Train Network</Button>
                     </Block>
                   </Form>
                 </Block>
@@ -165,7 +162,17 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                 ) : networkPayload ? (
                   networkPayload.map((data, index) =>
                     index !== 100 && index < 100 ? (
-                      <PayloadWeatherData key={data._id} temp={data.main.temp} pressure={data.main.pressure} humidity={data.main.humidity} lat={data.city.coord.lat} lon={data.city.coord.lon} />
+                      <PayloadWeatherData
+                        onSelect={async () => selectPayloadData({ id: data._id })}
+                        key={data._id}
+                        city={data.city.name}
+                        country={data.city.country}
+                        temp={data.main.temp}
+                        pressure={data.main.pressure}
+                        humidity={data.main.humidity}
+                        lat={data.city.coord.lat}
+                        lon={data.city.coord.lon}
+                      />
                     ) : (
                       'No data'
                     )
@@ -174,6 +181,19 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                   "Weather data wasn't download"
                 )}
               </DashBoard>
+              <Controlers>
+                <Block>
+                  <Form>
+                    <Title>Network Controller</Title>
+                    <Block>
+                      <Button onClick={NetworkHandler}>Train Network</Button>
+                    </Block>
+                    <Block>
+                      <Button onClick={UpdateHandler}>Update</Button>
+                    </Block>
+                  </Form>
+                </Block>
+              </Controlers>
             </Block>
           </>
         )
