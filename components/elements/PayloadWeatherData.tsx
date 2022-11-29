@@ -47,7 +47,18 @@ const Container = styled.div<ContainerProps>`
   flex: 0 0 480px;
   border: 0.2rem solid #000;
   margin: 0.5rem;
-  ${({ selected }) => (selected ? 'border:3px dashed green;' : '')}
+  ${({ selected }) =>
+    selected
+      ? `
+      border:3px solid #2DD700;
+      background-color:#0c260e;
+      h3::after {
+        background-color: #fff;
+      }
+      span {
+        color: #27ff00;
+      }`
+      : ''}
 `
 
 interface ContainerProps {

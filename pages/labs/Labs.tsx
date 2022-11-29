@@ -77,6 +77,15 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     }
   }
 
+  const clearHandler = (event) => {
+    event.preventDefault()
+    setSelectedAssets([])
+  }
+  const selectAllHandler = (event) => {
+    event.preventDefault()
+    setSelectedAssets([])
+    setSelectedAssets([...networkPayload])
+  }
   useEffect(() => {
     console.log(selectedAssets, 'networkPayload')
   }, [selectedAssets])
@@ -197,14 +206,15 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                 )}
               </DashBoard>
               <Controlers>
-                <Block>
+                <Block width='100%'>
                   <Form>
                     <Title>Network Controller</Title>
-                    <Block>
+                    <Block margin='0'>
                       <Button onClick={NetworkHandler}>Train Network</Button>
                     </Block>
-                    <Block>
-                      <Button onClick={UpdateHandler}>Update</Button>
+                    <Block justifyContent='space-between' display='flex' width='100%' margin='0'>
+                      <Button onClick={selectAllHandler}>Select all</Button>
+                      <Button onClick={clearHandler}>Clear </Button>
                     </Block>
                   </Form>
                 </Block>
@@ -268,7 +278,7 @@ const Controlers = styled.div`
   justify-content: start;
   display: flex;
   border: 0.2rem solid #000;
-  flex: 0 1 15%;
+  flex: 0 1 16.5%;
 `
 const DashBoard = styled.div`
   display: flex;
@@ -276,7 +286,7 @@ const DashBoard = styled.div`
   height: 560px;
   overflow-y: scroll;
   border: 0.2rem solid #000;
-  flex: 0 1 83%;
+  flex: 0 1 82.5%;
 `
 interface BlockProps {
   flexDirection?: string
@@ -287,7 +297,6 @@ interface BlockProps {
 }
 
 const Block = styled.div<BlockProps>`
-  flex: 0 0 50%;
   ${({ width }) => (width ? `width:${width}` : '')};
   ${({ margin }) => (margin ? `margin:${margin}` : 'margin: 0 0.5rem;')};
   ${({ display }) => (display ? `display:${display}` : '')};
