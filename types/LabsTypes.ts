@@ -14,7 +14,19 @@ export interface LabsProps {
   preloadWeatherData: any
 }
 
-export enum Pages{
-  DataBasePage = "DataBasePage" ,
-  NeuralNetworkPage = "NeuralNetworkPage",
+export enum Pages {
+  DataBasePage = 'DataBasePage',
+  NeuralNetworkPage = 'NeuralNetworkPage',
+}
+
+export interface PayloadWeatherDataProps {
+  onSelect?: () => {}
+  _id?: number
+  lat?: number
+  lon?: number
+  city?: string
+  country?: string
+  temp?: number
+  pressure?: number
+  humidity?: number
 }

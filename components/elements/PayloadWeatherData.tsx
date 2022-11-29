@@ -1,23 +1,15 @@
 import { FC, useState } from 'react'
 import styled from 'styled-components'
-
-interface PayloadWeatherDataProps {
-  onSelect: () => {}
-  lat?: number
-  lon?: number
-  city?: string
-  country?: string
-  temp?: number
-  pressure?: number
-  humidity?: number
-}
+import { PayloadWeatherDataProps } from '../../types/LabsTypes'
 
 const PayloadWeatherData: FC<PayloadWeatherDataProps> = ({ temp, city, country, pressure, humidity, lat, lon, onSelect }) => {
   const [selected, setSelected] = useState(false)
 
   const handleChange = () => {
     setSelected(!selected)
-    onSelect()
+    if (onSelect) {
+      onSelect()
+    }
   }
 
   return (
@@ -32,22 +24,9 @@ const PayloadWeatherData: FC<PayloadWeatherDataProps> = ({ temp, city, country, 
             Latitude: {lat !== undefined || lat !== null ? <ColoredText>{lat}</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
             &nbsp;|| Longitude:{lon !== undefined || lon !== null ? <ColoredText>{lon}</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
           </div>
-          <div>
-            Average temp:{' '}
-            {temp !== undefined || temp !== null ? <ColoredText>{temp} &deg;C</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
-          </div>
-          <div>
-            Pressure:{' '}
-            {pressure !== undefined || pressure !== null ? (
-              <ColoredText>{pressure} мм рт. ст.</ColoredText>
-            ) : (
-              <ColoredText color='red'>No data</ColoredText>
-            )}
-          </div>
-          <div>
-            Humidity:{' '}
-            {humidity !== undefined || humidity !== null ? <ColoredText>{humidity} %</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
-          </div>
+          <div>Average temp: {temp !== undefined || temp !== null ? <ColoredText>{temp} &deg;C</ColoredText> : <ColoredText color='red'>No data</ColoredText>}</div>
+          <div>Pressure: {pressure !== undefined || pressure !== null ? <ColoredText>{pressure} мм рт. ст.</ColoredText> : <ColoredText color='red'>No data</ColoredText>}</div>
+          <div>Humidity: {humidity !== undefined || humidity !== null ? <ColoredText>{humidity} %</ColoredText> : <ColoredText color='red'>No data</ColoredText>}</div>
         </DataInfo>
       </Flex>
     </Container>

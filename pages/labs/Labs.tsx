@@ -5,7 +5,7 @@ import { URL_LABS } from '../../constants/URLS'
 import { useEffect, useState } from 'react'
 import { Loader, WeatherData } from '../../components/elements'
 import { MaximalInput, MinimalInput, QueryFilterLogic, QueryRangesLogic } from '../../helpers'
-import { LabsProps, Pages, WeatherFilter } from '../../types/LabsTypes'
+import { LabsProps, Pages, PayloadWeatherDataProps, WeatherFilter } from '../../types/LabsTypes'
 import { Architect, Trainer } from 'synaptic'
 import { MakeNormalisation, MakeDeNormalisation } from '../../helpers'
 import styled from 'styled-components'
@@ -20,10 +20,14 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
 
   const [activePage, setActivePage] = useState<Pages>(Pages.NeuralNetworkPage)
 
-  const [networkPayload, setNetworkPayload] = useState<Array<any>>(defaultStateOfNetworkPayload)
+  const [neuralNetwork, setNeuralNetwork] = useState<any>()
+
   const [weatherData, setWeatherData] = useState<any[] | null>(preloadWeatherData)
   const [normalData, setNormalData] = useState<Array<any>>([])
+  const [networkPayload, setNetworkPayload] = useState<Array<any>>(defaultStateOfNetworkPayload)
+  const [networkNormalPayload, setNetworkNormalPayload] = useState<Array<any>>([])
 
+  const [selectedAssets, setSelectedAssets] = useState<Array<any>>([])
   const [result, setResult] = useState<Array<any>>([])
 
   const { request, loading } = useFetch()
@@ -38,25 +42,14 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
       const data = await request(`${URL_LABS}/weather?${QueryFilterLogic(requestFilterType, requestFilterValue)}`)
       setWeatherData(data)
     } else {
-      const data = await request(
-        `${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(requestFilterType, requestFilterValue)}`
-      )
+      const data = await request(`${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(requestFilterType, requestFilterValue)}`)
       setWeatherData(data)
     }
   }
-  const selectPayloadData = ({ id }: { id: any }) => {
-    console.log(id, 'current id')
-  }
-  useEffect(() => {
-    if (weatherData !== null) {
-      const data = weatherData.map((el) => MakeNormalisation(el))
-      setNormalData(data)
-    }
-  }, [weatherData])
 
   const NetworkHandler = () => {
-    let myNet = new Architect.Perceptron(4, 3, 1)
-    let trainer = new Trainer(myNet)
+    setNeuralNetwork(new Architect.Perceptron(4, 3, 1))
+    const trainer = new Trainer(neuralNetwork)
 
     const trainingOptions = {
       rate: 0.1,
@@ -72,6 +65,28 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     const data = await request(`${URL_LABS}/weather`, 'PUT')
     console.log(data, 'put request')
   }
+
+  const selectPayloadData = (selectedPayloadObject: PayloadWeatherDataProps) => {
+    const existingAsset = selectedAssets.find((el) => el._id === selectedPayloadObject._id)
+    if (!existingAsset) {
+      selectedAssets.push(selectedPayloadObject)
+      setSelectedAssets([...selectedAssets])
+    } else {
+      const filtredAssets = selectedAssets.filter((el) => el._id !== selectedPayloadObject._id)
+      setSelectedAssets([...filtredAssets])
+    }
+  }
+
+  useEffect(() => {
+    console.log(selectedAssets, 'networkPayload')
+  }, [selectedAssets])
+
+  useEffect(() => {
+    if (weatherData !== null) {
+      const data = weatherData.map((el) => MakeNormalisation(el))
+      setNormalData(data)
+    }
+  }, [weatherData])
 
   const DisplayActivePage = (page: Pages) => {
     switch (page) {
@@ -163,7 +178,7 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                   networkPayload.map((data, index) =>
                     index !== 100 && index < 100 ? (
                       <PayloadWeatherData
-                        onSelect={async () => selectPayloadData({ id: data._id })}
+                        onSelect={async () => selectPayloadData(data)}
                         key={data._id}
                         city={data.city.name}
                         country={data.city.country}
