@@ -42,7 +42,9 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
       const data = await request(`${URL_LABS}/weather?${QueryFilterLogic(requestFilterType, requestFilterValue)}`)
       setWeatherData(data)
     } else {
-      const data = await request(`${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(requestFilterType, requestFilterValue)}`)
+      const data = await request(
+        `${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(requestFilterType, requestFilterValue)}`
+      )
       setWeatherData(data)
     }
   }
@@ -77,11 +79,11 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     }
   }
 
-  const clearHandler = (event) => {
+  const clearHandler = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
     setSelectedAssets([])
   }
-  const selectAllHandler = (event) => {
+  const selectAllHandler = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
     setSelectedAssets([])
     setSelectedAssets([...networkPayload])

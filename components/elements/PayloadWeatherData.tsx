@@ -24,9 +24,22 @@ const PayloadWeatherData: FC<PayloadWeatherDataProps> = ({ temp, city, country, 
             Latitude: {lat !== undefined || lat !== null ? <ColoredText>{lat}</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
             &nbsp;|| Longitude:{lon !== undefined || lon !== null ? <ColoredText>{lon}</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
           </div>
-          <div>Average temp: {temp !== undefined || temp !== null ? <ColoredText>{temp} &deg;C</ColoredText> : <ColoredText color='red'>No data</ColoredText>}</div>
-          <div>Pressure: {pressure !== undefined || pressure !== null ? <ColoredText>{pressure} мм рт. ст.</ColoredText> : <ColoredText color='red'>No data</ColoredText>}</div>
-          <div>Humidity: {humidity !== undefined || humidity !== null ? <ColoredText>{humidity} %</ColoredText> : <ColoredText color='red'>No data</ColoredText>}</div>
+          <div>
+            Average temp:{' '}
+            {temp !== undefined || temp !== null ? <ColoredText>{temp} &deg;C</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
+          </div>
+          <div>
+            Pressure:{' '}
+            {pressure !== undefined || pressure !== null ? (
+              <ColoredText>{pressure} мм рт. ст.</ColoredText>
+            ) : (
+              <ColoredText color='red'>No data</ColoredText>
+            )}
+          </div>
+          <div>
+            Humidity:{' '}
+            {humidity !== undefined || humidity !== null ? <ColoredText>{humidity} %</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
+          </div>
         </DataInfo>
       </Flex>
     </Container>
@@ -47,6 +60,7 @@ const Container = styled.div<ContainerProps>`
   flex: 0 0 480px;
   border: 0.2rem solid #000;
   margin: 0.5rem;
+  color: #fff;
   ${({ selected }) =>
     selected
       ? `
@@ -58,7 +72,7 @@ const Container = styled.div<ContainerProps>`
       span {
         color: #27ff00;
       }`
-      : ''}
+      : ''};
 `
 
 interface ContainerProps {
