@@ -12,6 +12,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       const web3 = new Web3(PROVIDER_URL)
     }
   }, [])
+
   return (
     <MainTheme>
       <Component {...pageProps} />

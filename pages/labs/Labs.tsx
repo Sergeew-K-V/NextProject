@@ -2,7 +2,7 @@ import { NextPage } from 'next'
 import { ContainerBig } from '../../components/Layouts'
 import { useFetch } from '../../hooks/useFetch'
 import { URL_LABS } from '../../constants/URLS'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Loader, WeatherData } from '../../components/elements'
 import { MaximalInput, MinimalInput, QueryFilterLogic, QueryRangesLogic } from '../../helpers'
 import { LabsProps, Pages, PayloadWeatherDataProps, WeatherFilter } from '../../types/LabsTypes'
@@ -49,8 +49,9 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     }
   }
 
-  const NetworkHandler = () => {
-    setNeuralNetwork(new Architect.Perceptron(4, 3, 1))
+  const NetworkHandler = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault()
+    const neuralNetwork = new Architect.Perceptron(4, 3, 1)
     const trainer = new Trainer(neuralNetwork)
 
     const trainingOptions = {
@@ -59,22 +60,32 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
       error: 0.005,
     }
 
-    trainer.train(normalData, trainingOptions)
+    const result = trainer.train(normalData, trainingOptions)
+    setNeuralNetwork({ ...neuralNetwork })
   }
 
-  const UpdateHandler = async (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault()
-    const data = await request(`${URL_LABS}/weather`, 'PUT')
-    console.log(data, 'put request')
-  }
+  // const UpdateHandler = async (e: React.MouseEvent<HTMLElement>) => {
+  //   e.preventDefault()
+  //   const data = await request(`${URL_LABS}/weather`, 'PUT')
+  // }
 
   const selectPayloadData = (selectedPayloadObject: PayloadWeatherDataProps) => {
     const existingAsset = selectedAssets.find((el) => el._id === selectedPayloadObject._id)
     if (!existingAsset) {
+      networkPayload.find((el) => {
+        if (el._id === selectedPayloadObject._id) {
+          el.selected = true
+        }
+      })
       selectedAssets.push(selectedPayloadObject)
       setSelectedAssets([...selectedAssets])
     } else {
       const filtredAssets = selectedAssets.filter((el) => el._id !== selectedPayloadObject._id)
+      networkPayload.find((el) => {
+        if (el._id === selectedPayloadObject._id) {
+          el.selected = false
+        }
+      })
       setSelectedAssets([...filtredAssets])
     }
   }
@@ -82,14 +93,17 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
   const clearHandler = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
     setSelectedAssets([])
+    networkPayload.forEach((el) => (el.selected = false))
   }
   const selectAllHandler = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
-    setSelectedAssets([])
+    networkPayload.forEach((el) => (el.selected = true))
     setSelectedAssets([...networkPayload])
   }
+
   useEffect(() => {
-    console.log(selectedAssets, 'networkPayload')
+    console.log(selectedAssets, 'selectedAssets')
+    console.log(networkPayload, 'networkPayload')
   }, [selectedAssets])
 
   useEffect(() => {
@@ -198,6 +212,7 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                         humidity={data.main.humidity}
                         lat={data.city.coord.lat}
                         lon={data.city.coord.lon}
+                        selected={data.selected}
                       />
                     ) : (
                       'No data'
@@ -216,7 +231,7 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                     </Block>
                     <Block justifyContent='space-between' display='flex' width='100%' margin='0'>
                       <Button onClick={selectAllHandler}>Select all</Button>
-                      <Button onClick={clearHandler}>Clear </Button>
+                      <Button onClick={clearHandler}>Clear</Button>
                     </Block>
                   </Form>
                 </Block>

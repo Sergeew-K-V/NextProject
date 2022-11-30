@@ -20,7 +20,7 @@ export enum Pages {
 }
 
 export interface PayloadWeatherDataProps {
-  onSelect?: () => {}
+  onSelect?: any
   _id?: number
   lat?: number
   lon?: number
@@ -29,4 +29,5 @@ export interface PayloadWeatherDataProps {
   temp?: number
   pressure?: number
   humidity?: number
+  selected?: boolean
 }

@@ -2,22 +2,13 @@ import { FC, useState } from 'react'
 import styled from 'styled-components'
 import { PayloadWeatherDataProps } from '../../types/LabsTypes'
 
-const PayloadWeatherData: FC<PayloadWeatherDataProps> = ({ temp, city, country, pressure, humidity, lat, lon, onSelect }) => {
-  const [selected, setSelected] = useState(false)
-
-  const handleChange = () => {
-    setSelected(!selected)
-    if (onSelect) {
-      onSelect()
-    }
-  }
-
+const PayloadWeatherData: FC<PayloadWeatherDataProps> = ({ temp, city, country, pressure, humidity, lat, lon, onSelect, selected }) => {
   return (
     <Container selected={selected}>
       <Flex>
         <Title>
           City: {city} || Country: {country}
-          <input type='checkbox' onChange={handleChange} checked={selected} />
+          <input type='checkbox' onChange={onSelect} checked={selected} />
         </Title>
         <DataInfo>
           <div>
@@ -76,7 +67,7 @@ const Container = styled.div<ContainerProps>`
 `
 
 interface ContainerProps {
-  selected: boolean
+  selected?: boolean
 }
 
 const Flex = styled.div`
