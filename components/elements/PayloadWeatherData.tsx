@@ -5,10 +5,13 @@ import { PayloadWeatherDataProps } from '../../types/LabsTypes'
 const PayloadWeatherData: FC<PayloadWeatherDataProps> = ({ temp, city, country, pressure, humidity, lat, lon, onSelect, selected }) => {
   return (
     <Container selected={selected}>
+      <Checkbox>
+        <input id='checkbox' type='checkbox' checked={selected} />
+        <label onClick={onSelect} htmlFor='checkbox' />
+      </Checkbox>
       <Flex>
         <Title>
           City: {city} || Country: {country}
-          <input type='checkbox' onChange={onSelect} checked={selected} />
         </Title>
         <DataInfo>
           <div>
@@ -46,8 +49,53 @@ interface ColoredTextProps {
 const ColoredText = styled.span<ColoredTextProps>`
   ${({ color }) => (color ? `color:${color}` : 'color:#1000ff')};
 `
+const Checkbox = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  height: 1.5rem;
+  width: 1.5rem;
+  margin: 0.25rem;
+
+  label {
+    position: absolute;
+    left: 0;
+    background-color: #145f69;
+    border: 1px solid #000;
+    border-radius: 50%;
+    cursor: pointer;
+    height: 1.5rem;
+    width: 1.5rem;
+  }
+
+  label:after {
+    position: absolute;
+    border: 2px solid #000;
+    border-top: none;
+    border-right: none;
+    content: '';
+    height: 6px;
+    opacity: 0;
+    transform: translate(30%, 50%) rotate(-45deg);
+    width: 12px;
+  }
+
+  input[type='checkbox'] {
+    visibility: hidden;
+  }
+
+  input[type='checkbox']:checked + label:after {
+    opacity: 1;
+  }
+  input[type='checkbox']:checked + label {
+    background-color: #fff;
+    border-color: #000;
+  }
+`
 
 const Container = styled.div<ContainerProps>`
+  position: relative;
   flex: 0 0 480px;
   border: 0.2rem solid #000;
   margin: 0.5rem;

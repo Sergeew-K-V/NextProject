@@ -28,7 +28,8 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
   const [networkNormalPayload, setNetworkNormalPayload] = useState<Array<any>>([])
 
   const [selectedAssets, setSelectedAssets] = useState<Array<any>>([])
-  const [result, setResult] = useState<Array<any>>([])
+  const [errorNetwork, setErrorNetwork] = useState<Array<any>>([])
+  const [trainerResult, setTrainerResult] = useState<{ error: number; iterations: number; time: number } | null>(null)
 
   const { request, loading } = useFetch()
 
@@ -61,7 +62,9 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     }
 
     const result = trainer.train(normalData, trainingOptions)
+    console.log(result)
     setNeuralNetwork({ ...neuralNetwork })
+    setTrainerResult({ ...result })
   }
 
   // const UpdateHandler = async (e: React.MouseEvent<HTMLElement>) => {
@@ -100,11 +103,6 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     networkPayload.forEach((el) => (el.selected = true))
     setSelectedAssets([...networkPayload])
   }
-
-  useEffect(() => {
-    console.log(selectedAssets, 'selectedAssets')
-    console.log(networkPayload, 'networkPayload')
-  }, [selectedAssets])
 
   useEffect(() => {
     if (weatherData !== null) {
@@ -157,8 +155,8 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                         />
                       </Block>
                     </Block>
-                    <Block>
-                      <Button type='submit' onClick={GeneratorHandlerWeatherData}>
+                    <Block width='100%' margin='0'>
+                      <Button type='submit' width='100%' onClick={GeneratorHandlerWeatherData}>
                         Download weather data
                       </Button>
                     </Block>
@@ -226,12 +224,21 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                 <Block width='100%'>
                   <Form>
                     <Title>Network Controller</Title>
-                    <Block margin='0'>
-                      <Button onClick={NetworkHandler}>Train Network</Button>
+                    <Block margin='0' width='100%'>
+                      <Button onClick={NetworkHandler} width='100%'>
+                        Train Network
+                      </Button>
                     </Block>
+                    <hr style={{ width: '100%' }} />
                     <Block justifyContent='space-between' display='flex' width='100%' margin='0'>
                       <Button onClick={selectAllHandler}>Select all</Button>
-                      <Button onClick={clearHandler}>Clear</Button>
+                      <Button onClick={clearHandler}>Clear choses</Button>
+                    </Block>
+                    <Block>
+                      <Title>Training results</Title>
+                      <Block margin='0.5rem '>Result error: {trainerResult?.error}</Block>
+                      <Block margin='0.5rem '>Result iterations: {trainerResult?.iterations}</Block>
+                      <Block margin='0.5rem '>Result time: {trainerResult?.time}</Block>
                     </Block>
                   </Form>
                 </Block>
@@ -349,11 +356,13 @@ const Option = styled.option``
 interface ButtonProps {
   margin?: string
   padding?: string
+  width?: string
 }
 
 const Button = styled.button<ButtonProps>`
   ${({ margin }) => (margin ? `margin: ${margin};` : `margin: 1rem 0;`)}
   ${({ padding }) => (padding ? `padding: ${padding};` : 'padding: 0.5rem 2rem;')}
+  ${({ width }) => (width ? `width:${width};` : 'width:auto;')}
   color: white;
   background-color: #000;
   border: 1px solid #fff;
