@@ -6,8 +6,8 @@ const PayloadWeatherData: FC<PayloadWeatherDataProps> = ({ temp, city, country, 
   return (
     <Container selected={selected}>
       <Checkbox>
-        <input id='checkbox' type='checkbox' checked={selected} />
-        <label onClick={onSelect} htmlFor='checkbox' />
+        <div className='label' />
+        <input id='checkbox' type='checkbox' checked={selected} onChange={onSelect} />
       </Checkbox>
       <Flex>
         <Title>
@@ -18,22 +18,9 @@ const PayloadWeatherData: FC<PayloadWeatherDataProps> = ({ temp, city, country, 
             Latitude: {lat !== undefined || lat !== null ? <ColoredText>{lat}</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
             &nbsp;|| Longitude:{lon !== undefined || lon !== null ? <ColoredText>{lon}</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
           </div>
-          <div>
-            Average temp:{' '}
-            {temp !== undefined || temp !== null ? <ColoredText>{temp} &deg;C</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
-          </div>
-          <div>
-            Pressure:{' '}
-            {pressure !== undefined || pressure !== null ? (
-              <ColoredText>{pressure} мм рт. ст.</ColoredText>
-            ) : (
-              <ColoredText color='red'>No data</ColoredText>
-            )}
-          </div>
-          <div>
-            Humidity:{' '}
-            {humidity !== undefined || humidity !== null ? <ColoredText>{humidity} %</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
-          </div>
+          <div>Average temp: {temp !== undefined || temp !== null ? <ColoredText>{temp} &deg;C</ColoredText> : <ColoredText color='red'>No data</ColoredText>}</div>
+          <div>Pressure: {pressure !== undefined || pressure !== null ? <ColoredText>{pressure} мм рт. ст.</ColoredText> : <ColoredText color='red'>No data</ColoredText>}</div>
+          <div>Humidity: {humidity !== undefined || humidity !== null ? <ColoredText>{humidity} %</ColoredText> : <ColoredText color='red'>No data</ColoredText>}</div>
         </DataInfo>
       </Flex>
     </Container>
@@ -51,46 +38,42 @@ const ColoredText = styled.span<ColoredTextProps>`
 `
 const Checkbox = styled.div`
   position: absolute;
+  z-index: 1;
   top: 0;
   right: 0;
-  cursor: pointer;
   height: 1.5rem;
   width: 1.5rem;
   margin: 0.25rem;
 
-  label {
+  .label {
     position: absolute;
     left: 0;
+    top: 0;
     background-color: #145f69;
     border: 1px solid #000;
     border-radius: 50%;
-    cursor: pointer;
     height: 1.5rem;
     width: 1.5rem;
   }
 
-  label:after {
+  .label:after {
     position: absolute;
     border: 2px solid #000;
     border-top: none;
     border-right: none;
     content: '';
-    height: 6px;
+    height: 0.5rem;
     opacity: 0;
-    transform: translate(30%, 50%) rotate(-45deg);
-    width: 12px;
+    transform: translate(25%, 50%) rotate(-45deg);
+    width: 0.8rem;
   }
 
   input[type='checkbox'] {
-    visibility: hidden;
-  }
-
-  input[type='checkbox']:checked + label:after {
-    opacity: 1;
-  }
-  input[type='checkbox']:checked + label {
-    background-color: #fff;
-    border-color: #000;
+    opacity: 0;
+    cursor: pointer;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: 0;
   }
 `
 
@@ -110,6 +93,13 @@ const Container = styled.div<ContainerProps>`
       }
       span {
         color: #27ff00;
+      }
+      .label:after {
+        opacity:1;
+      }
+      .label {
+        background-color: #fff;
+        border-color: #000;
       }`
       : ''};
 `

@@ -33,7 +33,7 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
 
   const { request, loading } = useFetch()
 
-  const GeneratorHandlerWeatherData = async (e: React.MouseEvent<HTMLElement>) => {
+  const getWeatherData = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
     if (requestRangeTop <= requestRangeBottom && requestRangeTop !== 0) {
       return alert('Bottom range can`t be more or equal than top range')
@@ -43,11 +43,15 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
       const data = await request(`${URL_LABS}/weather?${QueryFilterLogic(requestFilterType, requestFilterValue)}`)
       setWeatherData(data)
     } else {
-      const data = await request(
-        `${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(requestFilterType, requestFilterValue)}`
-      )
+      const data = await request(`${URL_LABS}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(requestFilterType, requestFilterValue)}`)
       setWeatherData(data)
     }
+  }
+
+  const downloadAllData = async (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault()
+    const data = await request(`${URL_LABS}/weather?_limit=All`)
+    setWeatherData(data)
   }
 
   const NetworkHandler = (event: React.MouseEvent<HTMLElement>) => {
@@ -62,7 +66,6 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     }
 
     const result = trainer.train(normalData, trainingOptions)
-    console.log(result)
     setNeuralNetwork({ ...neuralNetwork })
     setTrainerResult({ ...result })
   }
@@ -98,18 +101,19 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     setSelectedAssets([])
     networkPayload.forEach((el) => (el.selected = false))
   }
+
   const selectAllHandler = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
     networkPayload.forEach((el) => (el.selected = true))
     setSelectedAssets([...networkPayload])
   }
 
-  useEffect(() => {
-    if (weatherData !== null) {
-      const data = weatherData.map((el) => MakeNormalisation(el))
-      setNormalData(data)
-    }
-  }, [weatherData])
+  // useEffect(() => {
+  //   if (weatherData !== null) {
+  //     const data = weatherData.map((el) => MakeNormalisation(el))
+  //     setNormalData(data)
+  //   }
+  // }, [weatherData])
 
   const DisplayActivePage = (page: Pages) => {
     switch (page) {
@@ -156,8 +160,13 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                       </Block>
                     </Block>
                     <Block width='100%' margin='0'>
-                      <Button type='submit' width='100%' onClick={GeneratorHandlerWeatherData}>
+                      <Button type='submit' width='100%' onClick={getWeatherData}>
                         Download weather data
+                      </Button>
+                    </Block>
+                    <Block width='100%' margin='0'>
+                      <Button type='submit' width='100%' onClick={downloadAllData}>
+                        Download all weather
                       </Button>
                     </Block>
                   </Form>
@@ -166,28 +175,30 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
               <DashBoard>
                 {loading ? (
                   <Loader />
-                ) : weatherData ? (
-                  weatherData.map((data, index) =>
-                    index !== 100 && index < 100 ? (
-                      <WeatherData
-                        key={data._id}
-                        city={data.city.name}
-                        country={data.city.country}
-                        temp={data.main.temp}
-                        temp_min={data.main.temp_min}
-                        temp_max={data.main.temp_max}
-                        pressure={data.main.pressure}
-                        humidity={data.main.humidity}
-                        lat={data.city.coord.lat}
-                        lon={data.city.coord.lon}
-                        time={data.time}
-                      />
-                    ) : (
-                      'No data'
-                    )
-                  )
+                ) : weatherData?.length !== 0 ? (
+                  weatherData?.map((data, index) => {
+                    if (index < 100 && index !== 100) {
+                      return (
+                        <WeatherData
+                          key={data._id}
+                          city={data.city.name}
+                          country={data.city.country}
+                          temp={data.main.temp}
+                          temp_min={data.main.temp_min}
+                          temp_max={data.main.temp_max}
+                          pressure={data.main.pressure}
+                          humidity={data.main.humidity}
+                          lat={data.city.coord.lat}
+                          lon={data.city.coord.lon}
+                          time={data.time}
+                        />
+                      )
+                    } else {
+                      return
+                    }
+                  })
                 ) : (
-                  "Weather data wasn't download"
+                  'Data don`t downloaded!'
                 )}
               </DashBoard>
             </Block>
@@ -195,30 +206,26 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
             <Heading>Network payload</Heading>
             <Block display='flex' justifyContent='space-between' width='100%'>
               <DashBoard>
-                {loading ? (
-                  <Loader />
-                ) : networkPayload ? (
-                  networkPayload.map((data, index) =>
-                    index !== 100 && index < 100 ? (
-                      <PayloadWeatherData
-                        onSelect={async () => selectPayloadData(data)}
-                        key={data._id}
-                        city={data.city.name}
-                        country={data.city.country}
-                        temp={data.main.temp}
-                        pressure={data.main.pressure}
-                        humidity={data.main.humidity}
-                        lat={data.city.coord.lat}
-                        lon={data.city.coord.lon}
-                        selected={data.selected}
-                      />
-                    ) : (
-                      'No data'
+                {networkPayload
+                  ? networkPayload.map((data, index) =>
+                      index !== 100 && index < 100 ? (
+                        <PayloadWeatherData
+                          onSelect={async () => selectPayloadData(data)}
+                          key={data._id}
+                          city={data.city.name}
+                          country={data.city.country}
+                          temp={data.main.temp}
+                          pressure={data.main.pressure}
+                          humidity={data.main.humidity}
+                          lat={data.city.coord.lat}
+                          lon={data.city.coord.lon}
+                          selected={data.selected}
+                        />
+                      ) : (
+                        'No data'
+                      )
                     )
-                  )
-                ) : (
-                  "Weather data wasn't download"
-                )}
+                  : "Weather data wasn't download"}
               </DashBoard>
               <Controlers>
                 <Block width='100%'>
