@@ -13,10 +13,7 @@ import PayloadWeatherData from '../../components/elements/PayloadWeatherData'
 import { defaultStateOfNetworkPayload } from '../../constants'
 import { Doughnut } from 'react-chartjs-2'
 
-import { Chart, ArcElement } from 'chart.js'
-
 const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
-  Chart.register(ArcElement)
   const [requestRangeBottom, setRequestRangeBottom] = useState<number>(0)
   const [requestRangeTop, setRequestRangeTop] = useState<number>(0)
   const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(WeatherFilter.city)
