@@ -11,14 +11,18 @@ import { MakeNormalisation, MakeDeNormalisation } from '../../helpers'
 import styled from 'styled-components'
 import PayloadWeatherData from '../../components/elements/PayloadWeatherData'
 import { defaultStateOfNetworkPayload } from '../../constants'
+import { Doughnut } from 'react-chartjs-2'
+
+import { Chart, ArcElement } from 'chart.js'
 
 const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
+  Chart.register(ArcElement)
   const [requestRangeBottom, setRequestRangeBottom] = useState<number>(0)
   const [requestRangeTop, setRequestRangeTop] = useState<number>(0)
   const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(WeatherFilter.city)
   const [requestFilterValue, setRequestFilterValue] = useState<string | number>('')
 
-  const [activePage, setActivePage] = useState<Pages>(Pages.NeuralNetworkPage)
+  const [activePage, setActivePage] = useState<Pages>(Pages.DataBasePage)
 
   const [neuralNetwork, setNeuralNetwork] = useState<any>()
 
@@ -31,7 +35,30 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
   const [errorNetwork, setErrorNetwork] = useState<Array<any>>([])
   const [trainerResult, setTrainerResult] = useState<{ error: number; iterations: number; time: number } | null>(null)
 
+  const getArrayForDoughnut = () => {
+    const arrCountry: string[] = []
+    if (weatherData?.length !== 0) {
+      weatherData?.map((el) => {
+        if (!arrCountry.find((country) => country === el.city.country)) {
+          arrCountry.push(el.city.country)
+        }
+      })
+    }
+    return arrCountry
+  }
+
+  const [doughnut, setDoughnut] = useState({
+    country: getArrayForDoughnut(),
+  })
+
   const { request, loading } = useFetch()
+
+  ///new state for complex view
+  const [trainingSet, setTrainingSet] = useState({
+    error: 0,
+    iterations: 0,
+    rate: 0,
+  })
 
   const GeneratorHandlerWeatherData = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
@@ -50,6 +77,12 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     }
   }
 
+  const downloadAll = async (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault()
+    const data = await request(`${URL_LABS}/weather?All`)
+    setWeatherData(data)
+  }
+
   const NetworkHandler = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
     const neuralNetwork = new Architect.Perceptron(4, 3, 1)
@@ -58,11 +91,10 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
     const trainingOptions = {
       rate: 0.1,
       iterations: 20000,
-      error: 0.005,
+      error: 0.003,
     }
 
     const result = trainer.train(normalData, trainingOptions)
-    console.log(result)
     setNeuralNetwork({ ...neuralNetwork })
     setTrainerResult({ ...result })
   }
@@ -113,9 +145,125 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
 
   const DisplayActivePage = (page: Pages) => {
     switch (page) {
+      case Pages.NeuralNetworkPage:
+        return (
+          <>
+            <Heading>Network page</Heading>
+            <Block display='flex' justifyContent='space-between' width='100%'>
+              <DashBoard>
+                {loading ? (
+                  <Loader />
+                ) : networkPayload ? (
+                  networkPayload.map((data, index) =>
+                    index !== 100 && index < 100 ? (
+                      <PayloadWeatherData
+                        onSelect={async () => selectPayloadData(data)}
+                        key={data._id}
+                        city={data.city.name}
+                        country={data.city.country}
+                        temp={data.main.temp}
+                        pressure={data.main.pressure}
+                        humidity={data.main.humidity}
+                        lat={data.city.coord.lat}
+                        lon={data.city.coord.lon}
+                        selected={data.selected}
+                      />
+                    ) : (
+                      'No data'
+                    )
+                  )
+                ) : (
+                  "Weather data wasn't download"
+                )}
+              </DashBoard>
+              <Controlers>
+                <Block width='100%'>
+                  <Form>
+                    <Title>Network Controller</Title>
+                    <Block justifyContent='space-between' display='flex' width='100%' margin='0'>
+                      <Button onClick={selectAllHandler}>Select all</Button>
+                      <Button onClick={clearHandler}>Clear choses</Button>
+                    </Block>
+                    <hr style={{ width: '100%' }} />
+                    <Block>
+                      <Title>Training options</Title>
+                      <Block>
+                        <div>Insert rate:</div>
+                        <Input value={trainingSet.rate} onChange={(event) => setTrainingSet({ ...trainingSet, rate: Number(event.target.value) })} />
+                      </Block>
+                      <Block>
+                        <div>Number of iterations:</div>
+                        <Input
+                          value={trainingSet.iterations}
+                          onChange={(event) => setTrainingSet({ ...trainingSet, iterations: Number(event.target.value) })}
+                        />
+                      </Block>
+                      <Block>
+                        <div> Approximate error:</div>
+                        <Input
+                          value={trainingSet.error}
+                          onChange={(event) => setTrainingSet({ ...trainingSet, error: Number(event.target.value) })}
+                        />
+                      </Block>
+                    </Block>
+                    <hr style={{ width: '100%' }} />
+                    <Block margin='0' width='100%'>
+                      <Button onClick={NetworkHandler} width='100%'>
+                        Train Network
+                      </Button>
+                    </Block>
+                    <Block>
+                      <Title>Training results</Title>
+                      <Block margin='0.5rem '>Result error: {trainerResult?.error}</Block>
+                      <Block margin='0.5rem '>Result iterations: {trainerResult?.iterations}</Block>
+                      <Block margin='0.5rem '>Result time: {trainerResult?.time}</Block>
+                    </Block>
+                  </Form>
+                </Block>
+              </Controlers>
+            </Block>
+          </>
+        )
       case Pages.DataBasePage:
         return (
           <>
+            <Heading>Database page</Heading>
+            <Block width='100%' margin='0 0 3rem' display='flex'>
+              <Block flex='0 1 25%'>
+                <Doughnut
+                  data={{
+                    labels: doughnut.country,
+                    datasets: [
+                      {
+                        label: 'Countries',
+                        data: doughnut.country,
+                        backgroundColor: [
+                          'rgb(255, 99, 132)',
+                          'rgb(255, 99, 132)',
+                          'rgb(255, 99, 132)',
+                          'rgb(255, 99, 132)',
+                          'rgb(255, 99, 132)',
+                          'rgb(255, 99, 132)',
+                          'rgb(255, 99, 132)',
+                          'rgb(255, 99, 132)',
+                          'rgb(255, 99, 132)',
+                          'rgb(255, 99, 132)',
+                          'rgb(255, 99, 132)',
+                          'rgb(255, 99, 132)',
+                          'rgb(255, 99, 132)',
+                          'rgb(255, 99, 132)',
+                          'rgb(255, 99, 132)',
+                          'rgb(255, 99, 132)',
+                          'rgb(54, 162, 235)',
+                          'rgb(255, 205, 86)',
+                        ],
+                        hoverOffset: 4,
+                      },
+                    ],
+                  }}
+                />
+              </Block>
+            </Block>
             <Block display='flex' flexDirection='row-reverse' justifyContent='space-between' width='100%'>
               <Controlers>
                 <Block>
@@ -160,6 +308,11 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                         Download weather data
                       </Button>
                     </Block>
+                    <Block width='100%' margin='0'>
+                      <Button type='submit' width='100%' onClick={downloadAll}>
+                        Download all weather data
+                      </Button>
+                    </Block>
                   </Form>
                 </Block>
               </Controlers>
@@ -191,63 +344,8 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
                 )}
               </DashBoard>
             </Block>
-            <br />
-            <Heading>Network payload</Heading>
-            <Block display='flex' justifyContent='space-between' width='100%'>
-              <DashBoard>
-                {loading ? (
-                  <Loader />
-                ) : networkPayload ? (
-                  networkPayload.map((data, index) =>
-                    index !== 100 && index < 100 ? (
-                      <PayloadWeatherData
-                        onSelect={async () => selectPayloadData(data)}
-                        key={data._id}
-                        city={data.city.name}
-                        country={data.city.country}
-                        temp={data.main.temp}
-                        pressure={data.main.pressure}
-                        humidity={data.main.humidity}
-                        lat={data.city.coord.lat}
-                        lon={data.city.coord.lon}
-                        selected={data.selected}
-                      />
-                    ) : (
-                      'No data'
-                    )
-                  )
-                ) : (
-                  "Weather data wasn't download"
-                )}
-              </DashBoard>
-              <Controlers>
-                <Block width='100%'>
-                  <Form>
-                    <Title>Network Controller</Title>
-                    <Block margin='0' width='100%'>
-                      <Button onClick={NetworkHandler} width='100%'>
-                        Train Network
-                      </Button>
-                    </Block>
-                    <hr style={{ width: '100%' }} />
-                    <Block justifyContent='space-between' display='flex' width='100%' margin='0'>
-                      <Button onClick={selectAllHandler}>Select all</Button>
-                      <Button onClick={clearHandler}>Clear choses</Button>
-                    </Block>
-                    <Block>
-                      <Title>Training results</Title>
-                      <Block margin='0.5rem '>Result error: {trainerResult?.error}</Block>
-                      <Block margin='0.5rem '>Result iterations: {trainerResult?.iterations}</Block>
-                      <Block margin='0.5rem '>Result time: {trainerResult?.time}</Block>
-                    </Block>
-                  </Form>
-                </Block>
-              </Controlers>
-            </Block>
           </>
         )
-      case Pages.NeuralNetworkPage:
-        return <>Network Page</>
       default:
         return <h1>Select page</h1>
     }
@@ -263,9 +361,6 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
             setActivePage(Pages.DataBasePage)
           }}
         >
-          {/* <Link href='/labs'> */}
-          {/* <a>Database</a> */}
-          {/* </Link> */}
           DataBase
         </Button>
         <Button
@@ -274,9 +369,6 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
             setActivePage(Pages.NeuralNetworkPage)
           }}
         >
-          {/* <Link href='/labs/neural_network' > */}
-          {/* <a>Neural Network</a> */}
-          {/* </Link> */}
           Neural Network
         </Button>
       </NavigationBlock>
@@ -318,6 +410,8 @@ interface BlockProps {
   justifyContent?: string
   margin?: string
   width?: string
+  height?: string
+  flex?: string
 }
 
 const Block = styled.div<BlockProps>`
@@ -326,6 +420,8 @@ const Block = styled.div<BlockProps>`
   ${({ display }) => (display ? `display:${display}` : '')};
   ${({ flexDirection }) => (flexDirection ? `flex-direction:${flexDirection}` : '')};
   ${({ justifyContent }) => (justifyContent ? `justify-content:${justifyContent}` : '')};
+  ${({ height }) => (height ? `height:${height}` : `height:auto`)};
+  ${({ flex }) => (flex ? `flex:${flex}` : '')};
 `
 
 const Form = styled.form`
