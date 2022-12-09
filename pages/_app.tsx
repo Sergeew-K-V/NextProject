@@ -1,9 +1,9 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
-import MainTheme from '../components/Layouts/MainTheme'
-import { useEffect } from 'react'
-import Web3 from 'web3'
-import { Chart, ArcElement, Tooltip, Legend } from 'chart.js'
+import "../styles/globals.css"
+import type { AppProps } from "next/app"
+import MainTheme from "../components/Layouts/MainTheme"
+import { useEffect } from "react"
+import Web3 from "web3"
+import { Chart, ArcElement, Tooltip, Legend } from "chart.js"
 Chart.register(ArcElement, Tooltip, Legend)
 
 function MyApp({ Component, pageProps }: AppProps) {

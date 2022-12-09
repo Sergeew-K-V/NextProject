@@ -16,19 +16,24 @@ const DoughnutDiagram: FC<DoughnutDiagramProps> = ({ labelList, colors, label })
     <Block flex="0 1 25%">
       <Doughnut
         data={{
-          labels: labelList.map((el: any) => {
+          labels: labelList.slice(0, 10).map((el: any) => {
             return el.type
           }),
           datasets: [
             {
-              label,
-              data: labelList.map((el: any) => {
+              label: label,
+              data: labelList.slice(0, 10).map((el: any) => {
                 return el.entries
               }),
               backgroundColor: colors,
               hoverOffset: 4,
             },
           ],
+        }}
+        options={{
+          plugins: {
+            legend: { position: "right" },
+          },
         }}
       />
     </Block>

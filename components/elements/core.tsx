@@ -44,13 +44,16 @@ export const Controlers = styled.div`
   border: 0.2rem solid #000;
   flex: 0 1 16.5%;
 `
-export const DashBoard = styled.div`
+interface DashBoardProps {
+  height?: string
+}
+export const DashBoard = styled.div<DashBoardProps>`
   display: flex;
   flex-wrap: wrap;
-  height: 560px;
   overflow-y: scroll;
   border: 0.2rem solid #000;
   flex: 0 1 82.5%;
+  ${({ height }) => (height ? `height:${height}` : "height: 560px")};
 `
 
 export const Button = styled.button<ButtonProps>`

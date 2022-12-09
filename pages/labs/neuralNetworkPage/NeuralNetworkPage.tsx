@@ -83,8 +83,8 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
   return (
     <>
       <Heading>Network page</Heading>
-      <Block display="flex" justifyContent="space-between" width="100%">
-        <DashBoard>
+      <Block display="flex" justifyContent="space-between" width="100%" margin="0 0 3rem">
+        <DashBoard height="740px">
           {networkPayload
             ? networkPayload.map((data, index) =>
                 index !== 100 && index < 100 ? (
