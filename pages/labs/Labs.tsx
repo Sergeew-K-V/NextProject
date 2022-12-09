@@ -1,44 +1,23 @@
 import { NextPage } from "next"
-import { ContainerBig } from "../../components/Layouts"
 import React, { useState } from "react"
+import { ContainerBig } from "../../components/Layouts"
 import { Button, Heading } from "../../components/elements"
-import { LabsProps, Pages, WeatherFilter } from "../../types/LabsTypes"
-import { defaultStateOfNetworkPayload } from "../../constants"
+import { LabsProps, Pages } from "../../types/LabsTypes"
 import styled from "styled-components"
-import DataBasePage from "./databasePage"
-import NeuralNetworkPage from "./NeuralNetworkPage"
+import DataBasePage from "./dataBasePage"
+import NeuralNetworkPage from "./neuralNetworkPage"
 
 const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
   const [activePage, setActivePage] = useState<Pages>(Pages.DataBasePage)
 
-  const [requestRangeBottom, setRequestRangeBottom] = useState<number>(0)
-  const [requestRangeTop, setRequestRangeTop] = useState<number>(0)
-  const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(WeatherFilter.city)
-  const [requestFilterValue, setRequestFilterValue] = useState<string | number>("")
-
-  const [neuralNetwork, setNeuralNetwork] = useState<any>()
-
   const [weatherData, setWeatherData] = useState<any[] | null>(preloadWeatherData)
-  const [normalData, setNormalData] = useState<Array<any>>([])
-  const [networkPayload, setNetworkPayload] = useState<Array<any>>(defaultStateOfNetworkPayload)
-  const [networkNormalPayload, setNetworkNormalPayload] = useState<Array<any>>([])
-
-  const [selectedAssets, setSelectedAssets] = useState<Array<any>>([])
-  const [errorNetwork, setErrorNetwork] = useState<Array<any>>([])
-  const [trainerResult, setTrainerResult] = useState<{ error: number; iterations: number; time: number } | null>(null)
-
-  const [trainingSet, setTrainingSet] = useState({
-    rate: 0.1,
-    iterations: 20000,
-    error: 0.0003,
-  })
 
   const DisplayActivePage = (page: Pages) => {
     switch (page) {
       case Pages.NeuralNetworkPage:
-        return <NeuralNetworkPage />
+        return <NeuralNetworkPage weatherData={weatherData} />
       case Pages.DataBasePage:
-        return <DataBasePage />
+        return <DataBasePage weatherData={weatherData} setWeatherData={setWeatherData} />
       default:
         return <h1>Select page</h1>
     }

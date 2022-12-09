@@ -1,15 +1,24 @@
 import { NextPage } from "next"
-import { useMemo } from "react"
-import { DoughnutDiagram } from "../../../components"
-import { Block, Controlers, DashBoard, Form, Heading, Input, Loader, Title, Option, Select } from "../../../components/elements"
+import { useMemo, useState } from "react"
+import { DoughnutDiagram, WeatherData } from "../../../components"
+import { Block, Controlers, DashBoard, Form, Heading, Input, Loader, Title, Option, Select, Button } from "../../../components/elements"
 import { URL_LABS } from "../../../constants/URLS"
 import { useFetch } from "../../../hooks/useFetch"
-import { GetArrayForDoughnut, GetColors, QueryFilterLogic, QueryRangesLogic } from "../../../utils"
+import { WeatherFilter } from "../../../types/LabsTypes"
+import { GetArrayForDoughnut, GetColors, MaximalInput, MinimalInput, QueryFilterLogic, QueryRangesLogic } from "../../../utils"
 
-interface DataBasePageProps {}
+interface DataBasePageProps {
+  weatherData: any[] | null
+  setWeatherData: React.Dispatch<React.SetStateAction<any[] | null>>
+}
 
-const DataBasePage: NextPage<DataBasePageProps> = () => {
+const DataBasePage: NextPage<DataBasePageProps> = ({ weatherData, setWeatherData }) => {
   const { request, loading } = useFetch()
+
+  const [requestRangeBottom, setRequestRangeBottom] = useState<number>(0)
+  const [requestRangeTop, setRequestRangeTop] = useState<number>(0)
+  const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(WeatherFilter.city)
+  const [requestFilterValue, setRequestFilterValue] = useState<string | number>("")
 
   const doughnut = useMemo(() => {
     if (weatherData)
@@ -41,15 +50,16 @@ const DataBasePage: NextPage<DataBasePageProps> = () => {
     const data = await request(`${URL_LABS}/weather?_limit=All`)
     setWeatherData(data)
   }
+
   return (
     <>
       <Heading>Database page</Heading>
       <Block width="100%" margin="0 0 3rem" display="flex">
         <Block flex="0 1 25%">
-          <DoughnutDiagram label="Country" labelList={doughnut ? doughnut.data.coutries : []} colors={doughnut ? doughnut.colors : []} />
+          <DoughnutDiagram label="Country" labelList={doughnut ? doughnut.data.coutries : []} colors={doughnut?.colors ? doughnut.colors : []} />
         </Block>
         <Block flex="0 1 25%">
-          <DoughnutDiagram label="City" labelList={doughnut ? doughnut.data.cities : []} colors={doughnut ? doughnut.colors : []} />
+          <DoughnutDiagram label="City" labelList={doughnut ? doughnut.data.cities : []} colors={doughnut?.colors ? doughnut.colors : []} />
         </Block>
       </Block>
       <Block display="flex" margin="0 0 3rem" flexDirection="row-reverse" justifyContent="space-between" width="100%">
@@ -108,7 +118,7 @@ const DataBasePage: NextPage<DataBasePageProps> = () => {
           {loading ? (
             <Loader />
           ) : weatherData?.length !== 0 ? (
-            weatherData?.map((data, index) => {
+            weatherData?.map((data: any, index: number) => {
               if (index < 100 && index !== 100) {
                 return (
                   <WeatherData
