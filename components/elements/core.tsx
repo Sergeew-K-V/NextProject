@@ -72,3 +72,10 @@ export const Input = styled.input`
   width: 10rem;
   min-height: 25px;
 `
+
+export const Select = styled.select`
+  min-height: 25px;
+  margin: 0 0.2rem 0 0;
+`
+
+export const Option = styled.option``
