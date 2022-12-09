@@ -1,8 +1,8 @@
-import { NextPage } from 'next'
-import { useState } from 'react'
-import styled from 'styled-components'
-import { Loader } from '../../components/elements'
-import { useFetch } from '../../hooks/useFetch'
+import { NextPage } from "next"
+import { useState } from "react"
+import { Loader } from "../../components/elements"
+import { useFetch } from "../../hooks/useFetch"
+import styled from "styled-components"
 
 const JavaPage: NextPage = () => {
   const [lng, setLng] = useState(0)
@@ -28,20 +28,20 @@ const JavaPage: NextPage = () => {
   const { request, loading } = useFetch()
 
   return (
-    <Block flexDirection='column' display='flex' width='100%'>
-      <Block display='flex' margin='3rem 0'>
+    <Block flexDirection="column" display="flex" width="100%">
+      <Block display="flex" margin="3rem 0">
         <Controlers>
-          <Block display='flex' flexDirection='column'>
+          <Block display="flex" flexDirection="column">
             <Title>Add latitude for request:</Title>
-            <Input value={lat} onChange={(event) => setLat(event.target.value)} type='number' />
+            <Input value={lat} onChange={(event) => setLat(event.target.value)} type="number" />
 
             <Title>Add longtitude for request:</Title>
-            <Input value={lng} onChange={(event) => setLng(event.target.value)} type='number' />
+            <Input value={lng} onChange={(event) => setLng(event.target.value)} type="number" />
             <Block>
               <Button onClick={submitHandler}>Make request</Button>
             </Block>
           </Block>
-        </Controlers>{' '}
+        </Controlers>{" "}
         <DashBoard>
           {loading ? (
             <Loader />
@@ -81,14 +81,6 @@ const CustomElement = (element: any) => {
   )
 }
 
-interface ColoredTextProps {
-  color?: string
-}
-
-const ColoredText = styled.span<ColoredTextProps>`
-  ${({ color }) => (color ? `color:${color}` : 'color:#1000ff')};
-`
-
 const Controlers = styled.div`
   justify-content: start;
   display: flex;
@@ -121,7 +113,7 @@ const Container = styled.div<ContainerProps>`
         background-color: #fff;
         border-color: #000;
       }`
-      : ''};
+      : ""};
 `
 
 interface ContainerProps {
@@ -158,21 +150,13 @@ interface BlockProps {
 }
 
 const Block = styled.div<BlockProps>`
-  ${({ width }) => (width ? `width:${width}` : '')};
-  ${({ margin }) => (margin ? `margin:${margin}` : 'margin: 0 0.5rem;')};
-  ${({ display }) => (display ? `display:${display}` : '')};
-  ${({ flexDirection }) => (flexDirection ? `flex-direction:${flexDirection}` : '')};
-  ${({ justifyContent }) => (justifyContent ? `justify-content:${justifyContent}` : '')};
+  ${({ width }) => (width ? `width:${width}` : "")};
+  ${({ margin }) => (margin ? `margin:${margin}` : "margin: 0 0.5rem;")};
+  ${({ display }) => (display ? `display:${display}` : "")};
+  ${({ flexDirection }) => (flexDirection ? `flex-direction:${flexDirection}` : "")};
+  ${({ justifyContent }) => (justifyContent ? `justify-content:${justifyContent}` : "")};
   ${({ height }) => (height ? `height:${height}` : `height:auto`)};
-  ${({ flex }) => (flex ? `flex:${flex}` : '')};
-`
-
-const Form = styled.form`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  margin: 0 0 1.5rem;
-  align-items: flex-start;
+  ${({ flex }) => (flex ? `flex:${flex}` : "")};
 `
 
 const Title = styled.h3`
@@ -185,13 +169,6 @@ const Input = styled.input`
   min-height: 25px;
 `
 
-const Select = styled.select`
-  min-height: 25px;
-  margin: 0 0.2rem 0 0;
-`
-
-const Option = styled.option``
-
 interface ButtonProps {
   margin?: string
   padding?: string
@@ -200,8 +177,8 @@ interface ButtonProps {
 
 const Button = styled.button<ButtonProps>`
   ${({ margin }) => (margin ? `margin: ${margin};` : `margin: 1rem 0;`)}
-  ${({ padding }) => (padding ? `padding: ${padding};` : 'padding: 0.5rem 2rem;')}
-  ${({ width }) => (width ? `width:${width};` : 'width:auto;')}
+  ${({ padding }) => (padding ? `padding: ${padding};` : "padding: 0.5rem 2rem;")}
+  ${({ width }) => (width ? `width:${width};` : "width:auto;")}
   color: white;
   background-color: #000;
   border: 1px solid #fff;

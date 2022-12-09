@@ -1,13 +1,13 @@
-import { FC } from 'react'
-import styled from 'styled-components'
-import { PayloadWeatherDataProps } from '../../types/LabsTypes'
+import { FC } from "react"
+import styled from "styled-components"
+import { PayloadWeatherDataProps } from "../types/LabsTypes"
 
 const PayloadWeatherData: FC<PayloadWeatherDataProps> = ({ temp, city, country, pressure, humidity, lat, lon, onSelect, selected }) => {
   return (
     <Container selected={selected}>
       <Checkbox>
-        <div className='label' />
-        <input id='checkbox' type='checkbox' checked={selected} onChange={onSelect} />
+        <div className="label" />
+        <input id="checkbox" type="checkbox" checked={selected} onChange={onSelect} />
       </Checkbox>
       <Flex>
         <Title>
@@ -15,24 +15,24 @@ const PayloadWeatherData: FC<PayloadWeatherDataProps> = ({ temp, city, country, 
         </Title>
         <DataInfo>
           <div>
-            Latitude: {lat !== undefined || lat !== null ? <ColoredText>{lat}</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
-            &nbsp;|| Longitude:{lon !== undefined || lon !== null ? <ColoredText>{lon}</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
+            Latitude: {lat !== undefined || lat !== null ? <ColoredText>{lat}</ColoredText> : <ColoredText color="red">No data</ColoredText>}
+            &nbsp;|| Longitude:{lon !== undefined || lon !== null ? <ColoredText>{lon}</ColoredText> : <ColoredText color="red">No data</ColoredText>}
           </div>
           <div>
-            Average temp:{' '}
-            {temp !== undefined || temp !== null ? <ColoredText>{temp} &deg;C</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
+            Average temp:{" "}
+            {temp !== undefined || temp !== null ? <ColoredText>{temp} &deg;C</ColoredText> : <ColoredText color="red">No data</ColoredText>}
           </div>
           <div>
-            Pressure:{' '}
+            Pressure:{" "}
             {pressure !== undefined || pressure !== null ? (
               <ColoredText>{pressure} мм рт. ст.</ColoredText>
             ) : (
-              <ColoredText color='red'>No data</ColoredText>
+              <ColoredText color="red">No data</ColoredText>
             )}
           </div>
           <div>
-            Humidity:{' '}
-            {humidity !== undefined || humidity !== null ? <ColoredText>{humidity} %</ColoredText> : <ColoredText color='red'>No data</ColoredText>}
+            Humidity:{" "}
+            {humidity !== undefined || humidity !== null ? <ColoredText>{humidity} %</ColoredText> : <ColoredText color="red">No data</ColoredText>}
           </div>
         </DataInfo>
       </Flex>
@@ -47,7 +47,7 @@ interface ColoredTextProps {
 }
 
 const ColoredText = styled.span<ColoredTextProps>`
-  ${({ color }) => (color ? `color:${color}` : 'color:#1000ff')};
+  ${({ color }) => (color ? `color:${color}` : "color:#1000ff")};
 `
 const Checkbox = styled.div`
   position: absolute;
@@ -74,14 +74,14 @@ const Checkbox = styled.div`
     border: 2px solid #000;
     border-top: none;
     border-right: none;
-    content: '';
+    content: "";
     height: 0.5rem;
     opacity: 0;
     transform: translate(25%, 50%) rotate(-45deg);
     width: 0.8rem;
   }
 
-  input[type='checkbox'] {
+  input[type="checkbox"] {
     opacity: 0;
     cursor: pointer;
     width: 1.5rem;
@@ -114,7 +114,7 @@ const Container = styled.div<ContainerProps>`
         background-color: #fff;
         border-color: #000;
       }`
-      : ''};
+      : ""};
 `
 
 interface ContainerProps {
@@ -132,7 +132,7 @@ const Title = styled.h3`
   text-transform: uppercase;
   position: relative;
   ::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 0;

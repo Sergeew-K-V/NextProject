@@ -1,5 +1,5 @@
-import { WeatherRange } from '../constants'
-import { WeatherFilter } from '../types/LabsTypes'
+import { WeatherRange } from "../constants"
+import { WeatherFilter } from "../types/LabsTypes"
 
 export const MinimalInput = (type: string | number) => {
   switch (type) {
@@ -14,9 +14,10 @@ export const MinimalInput = (type: string | number) => {
     case WeatherFilter.lat:
       return WeatherRange.latMin
     default:
-      return ''
+      return ""
   }
 }
+
 export const MaximalInput = (type: string | number) => {
   switch (type) {
     case WeatherFilter.temp || WeatherFilter.temp_max || WeatherFilter.temp_min:
@@ -30,6 +31,6 @@ export const MaximalInput = (type: string | number) => {
     case WeatherFilter.lat:
       return WeatherRange.latMax
     default:
-      return ''
+      return ""
   }
 }

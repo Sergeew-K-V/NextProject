@@ -1,7 +1,7 @@
-import { URL_LABS } from '../../constants/URLS'
-import { QueryRangesLogic } from '../../helpers'
+import { URL_LABS } from "../../constants/URLS"
+import { QueryRangesLogic } from "../../utils"
 
-export { default } from './Labs'
+export { default } from "./Labs"
 
 export async function getStaticProps() {
   const res = await fetch(`${URL_LABS}/weather?${QueryRangesLogic(0, 0)}`)
