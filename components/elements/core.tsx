@@ -8,6 +8,8 @@ interface BlockProps {
   width?: string
   height?: string
   flex?: string
+  alignItems?: string
+  border?: string
 }
 
 interface ButtonProps {
@@ -22,8 +24,10 @@ export const Block = styled.div<BlockProps>`
   ${({ display }) => (display ? `display:${display}` : "")};
   ${({ flexDirection }) => (flexDirection ? `flex-direction:${flexDirection}` : "")};
   ${({ justifyContent }) => (justifyContent ? `justify-content:${justifyContent}` : "")};
+  ${({ alignItems }) => (alignItems ? `align-items:${alignItems}` : "")};
   ${({ height }) => (height ? `height:${height}` : `height:auto`)};
   ${({ flex }) => (flex ? `flex:${flex}` : "")};
+  ${({ border }) => (border ? `border:${border}` : "")};
 `
 
 export const Heading = styled.h2`
@@ -68,6 +72,20 @@ export const Button = styled.button<ButtonProps>`
 
 export const Title = styled.h3`
   margin: 1rem 0;
+`
+
+export const StatusBar = styled.div``
+
+interface StatusProps {
+  completed?: boolean
+}
+
+export const Status = styled.div<StatusProps>`
+  ${({ completed }) => (completed ? `background-color:lime` : "background-color:red")};
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid black;
 `
 
 export const Input = styled.input`

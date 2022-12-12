@@ -1,10 +1,11 @@
 import { NextPage } from "next"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { PayloadWeatherData } from "../../../components"
-import { Block, Button, Controlers, DashBoard, Form, Heading, Input, Loader, Title } from "../../../components/elements"
+import { Block, Button, Controlers, DashBoard, Form, Heading, Input, Title, StatusBar, Status } from "../../../components/elements"
 import { defaultStateOfNetworkPayload } from "../../../constants"
 import { PayloadWeatherDataProps } from "../../../types/LabsTypes"
 import { MakeNormalisation } from "../../../utils"
+import { Architect, Trainer } from "synaptic"
 
 interface NeuralNetworkPageProps {
   weatherData: any[] | null
@@ -24,6 +25,12 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
   })
   const [trainerResult, setTrainerResult] = useState<{ error: number; iterations: number; time: number } | null>(null)
 
+  const [status, setStatus] = useState({
+    selected: false,
+    trained: false,
+    normalised: false,
+  })
+
   const NetworkHandler = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
     const neuralNetwork = new Architect.Perceptron(4, 3, 1)
@@ -36,12 +43,14 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
     const result = trainer.train(normalisatedData, trainingSet)
     setNeuralNetwork({ ...neuralNetwork })
     setTrainerResult({ ...result })
+    setStatus({ ...status, trained: true })
   }
 
   const handleNormalisation = (event: any) => {
     event?.preventDefault()
     const data = selectedAssets.map((el) => MakeNormalisation(el))
     setNormalisedSelectedAssets(data)
+    setStatus({ ...status, normalised: true })
   }
 
   const selectPayloadData = (selectedPayloadObject: PayloadWeatherDataProps) => {
@@ -78,32 +87,59 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
   }
 
   const activateNetwork = (event: React.MouseEvent<HTMLElement>) => {
-    neuralNetwork.activate()
+    event.preventDefault()
+    const test = normalisedSelectedAssets.map((el) => {
+      return neuralNetwork.activate(el.input)
+    })
   }
+
+  useEffect(() => {
+    if (selectedAssets.length !== 0) {
+      setStatus({ ...status, selected: true })
+    } else {
+      setStatus({ ...status, selected: false })
+    }
+  }, [selectAllHandler, clearHandler, selectPayloadData])
+
   return (
     <>
-      <Heading>Network page</Heading>
+      <Block display="flex">
+        <Block>
+          <Heading>Network page</Heading>
+          <Title style={{ margin: "1rem" }}>Total count of data for trainer: {weatherData?.length}</Title>
+        </Block>
+        <Block display="flex" border="2px solid black" height="70px">
+          <Block display="flex" justifyContent="center" flexDirection="column" alignItems="center">
+            <Status completed={status.selected} />
+            <span>Selected data</span>
+          </Block>
+          <Block display="flex" justifyContent="center" flexDirection="column" alignItems="center">
+            <Status completed={status.trained} />
+            <span>Trained</span>
+          </Block>
+          <Block display="flex" justifyContent="center" flexDirection="column" alignItems="center">
+            <Status completed={status.normalised} />
+            <span>Normalised</span>
+          </Block>
+        </Block>
+      </Block>
       <Block display="flex" justifyContent="space-between" width="100%" margin="0 0 3rem">
         <DashBoard height="740px">
           {networkPayload
-            ? networkPayload.map((data, index) =>
-                index !== 100 && index < 100 ? (
-                  <PayloadWeatherData
-                    onSelect={async () => selectPayloadData(data)}
-                    key={data._id}
-                    city={data.city.name}
-                    country={data.city.country}
-                    temp={data.main.temp}
-                    pressure={data.main.pressure}
-                    humidity={data.main.humidity}
-                    lat={data.city.coord.lat}
-                    lon={data.city.coord.lon}
-                    selected={data.selected}
-                  />
-                ) : (
-                  "No data"
-                )
-              )
+            ? networkPayload.map((data) => (
+                <PayloadWeatherData
+                  onSelect={async () => selectPayloadData(data)}
+                  key={data._id}
+                  city={data.city.name}
+                  country={data.city.country}
+                  temp={data.main.temp}
+                  pressure={data.main.pressure}
+                  humidity={data.main.humidity}
+                  lat={data.city.coord.lat}
+                  lon={data.city.coord.lon}
+                  selected={data.selected}
+                />
+              ))
             : "Weather data wasn't download"}
         </DashBoard>
         <Controlers>
@@ -147,7 +183,7 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
               </Block>
               <hr style={{ width: "100%" }} />
               <Block margin="0" width="100%">
-                <Button onClick={activateNetwork} width="100%">
+                <Button onClick={activateNetwork} disabled={status.normalised && status.selected && status.trained ? false : true} width="100%">
                   Use neural network
                 </Button>
               </Block>

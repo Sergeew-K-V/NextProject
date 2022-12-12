@@ -20,11 +20,16 @@ const DataBasePage: NextPage<DataBasePageProps> = ({ weatherData, setWeatherData
   const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(WeatherFilter.city)
   const [requestFilterValue, setRequestFilterValue] = useState<string | number>("")
 
+  const diagramData: any = useMemo(() => {
+    const data = weatherData?.slice(0, 100)
+    return data
+  }, [weatherData])
+
   const doughnut = useMemo(() => {
     if (weatherData)
       return {
-        data: { coutries: GetArrayForDoughnut(weatherData, "city.country"), cities: GetArrayForDoughnut(weatherData, "city.name") },
-        colors: weatherData ? GetColors(weatherData) : [],
+        data: { coutries: GetArrayForDoughnut(diagramData, "city.country"), cities: GetArrayForDoughnut(diagramData, "city.name") },
+        colors: diagramData ? GetColors(diagramData) : [],
       }
   }, [weatherData])
 
@@ -62,6 +67,7 @@ const DataBasePage: NextPage<DataBasePageProps> = ({ weatherData, setWeatherData
           <DoughnutDiagram label="City" labelList={doughnut ? doughnut.data.cities : []} colors={doughnut?.colors ? doughnut.colors : []} />
         </Block>
       </Block>
+      <Title style={{ margin: "1rem" }}>Total count of data: {loading ? "loading..." : weatherData?.length}</Title>
       <Block display="flex" margin="0 0 3rem" flexDirection="row-reverse" justifyContent="space-between" width="100%">
         <Controlers>
           <Block>
@@ -117,8 +123,8 @@ const DataBasePage: NextPage<DataBasePageProps> = ({ weatherData, setWeatherData
         <DashBoard>
           {loading ? (
             <Loader />
-          ) : weatherData?.length !== 0 ? (
-            weatherData?.slice(0, 100).map((data: any) => {
+          ) : diagramData?.length !== 0 ? (
+            diagramData?.map((data: any) => {
               return (
                 <WeatherData
                   key={data._id}

@@ -1,28 +1,52 @@
-import { FC } from 'react'
-import styled from 'styled-components'
+import { FC } from "react"
+import styled from "styled-components"
 
-const Loader: FC = () => {
+interface LoaderProps {
+  width?: string
+  height?: string
+  position?: string
+  top?: string
+  left?: string
+  transform?: string
+  margin?: string
+}
+const Loader: FC<LoaderProps> = ({ width, height, position, top, left, transform, margin }) => {
   return (
-    <LoaderBody>
-      <DualRing />
+    <LoaderBody position={position} top={top} left={left} transform={transform} margin={margin}>
+      <DualRing width={width} height={height} />
     </LoaderBody>
   )
 }
 
 export default Loader
 
-const LoaderBody = styled.div`
-  position: relative;
+interface LoaderBodyProps {
+  position?: string
+  top?: string
+  left?: string
+  transform?: string
+  margin?: string
+}
+
+interface DualRingProps {
+  width?: string
+  height?: string
+}
+const LoaderBody = styled.div<LoaderBodyProps>`
   display: flex;
   justify-content: center;
-  margin: 150px auto;
+  ${({ margin }) => (margin ? `margin:${margin}` : "margin:150px auto")};
+  ${({ position }) => (position ? `position:${position}` : "position: relative")};
+  ${({ top }) => (top ? `top:${top}` : "")};
+  ${({ left }) => (left ? `left:${left}` : "")};
+  ${({ transform }) => (transform ? transform : "")};
 `
-const DualRing = styled.div`
+const DualRing = styled.div<DualRingProps>`
+  ${({ width }) => (width ? `width:${width}` : "width:160px")};
+  ${({ height }) => (height ? `width:${height}` : "height:160px")};
   display: inline-block;
-  width: 160px;
-  height: 160px;
   ::after {
-    content: ' ';
+    content: " ";
     display: block;
     width: 256px;
     height: 256px;

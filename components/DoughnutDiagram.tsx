@@ -12,17 +12,18 @@ const DoughnutDiagram: FC<DoughnutDiagramProps> = ({ labelList, colors, label })
   if (!labelList) {
     return null
   }
+
   return (
     <Block flex="0 1 25%">
       <Doughnut
         data={{
-          labels: labelList.slice(0, 10).map((el: any) => {
+          labels: labelList.map((el: any) => {
             return el.type
           }),
           datasets: [
             {
               label: label,
-              data: labelList.slice(0, 10).map((el: any) => {
+              data: labelList.map((el: any) => {
                 return el.entries
               }),
               backgroundColor: colors,
