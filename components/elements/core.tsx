@@ -16,6 +16,7 @@ interface ButtonProps {
   margin?: string
   padding?: string
   width?: string
+  locked?: boolean
 }
 
 export const Block = styled.div<BlockProps>`
@@ -64,10 +65,10 @@ export const Button = styled.button<ButtonProps>`
   ${({ margin }) => (margin ? `margin: ${margin};` : `margin: 1rem 0;`)}
   ${({ padding }) => (padding ? `padding: ${padding};` : "padding: 0.5rem 2rem;")}
   ${({ width }) => (width ? `width:${width};` : "width:auto;")}
+  ${({ locked }) => (locked ? `background-color: grey;` : "background-color: #000;")}
+  ${({ locked }) => (locked ? `cursor: default;` : "cursor: pointer;")}
   color: white;
-  background-color: #000;
   border: 1px solid #fff;
-  cursor: pointer;
 `
 
 export const Title = styled.h3`

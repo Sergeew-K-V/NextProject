@@ -48,9 +48,13 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
 
   const handleNormalisation = (event: any) => {
     event?.preventDefault()
-    const data = selectedAssets.map((el) => MakeNormalisation(el))
-    setNormalisedSelectedAssets(data)
-    setStatus({ ...status, normalised: true })
+    if (selectedAssets.length !== 0) {
+      const data = selectedAssets.map((el) => MakeNormalisation(el))
+      setNormalisedSelectedAssets(data)
+      setStatus({ ...status, normalised: true })
+    } else {
+      alert("You didn`t select any assets")
+    }
   }
 
   const selectPayloadData = (selectedPayloadObject: PayloadWeatherDataProps) => {
@@ -88,9 +92,10 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
 
   const activateNetwork = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
-    const test = normalisedSelectedAssets.map((el) => {
+    const activatedData = normalisedSelectedAssets.map((el) => {
       return neuralNetwork.activate(el.input)
     })
+    console.log(activatedData)
   }
 
   useEffect(() => {
@@ -99,7 +104,7 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
     } else {
       setStatus({ ...status, selected: false })
     }
-  }, [selectAllHandler, clearHandler, selectPayloadData])
+  }, [selectedAssets])
 
   return (
     <>
@@ -108,7 +113,7 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
           <Heading>Network page</Heading>
           <Title style={{ margin: "1rem" }}>Total count of data for trainer: {weatherData?.length}</Title>
         </Block>
-        <Block display="flex" border="2px solid black" height="70px">
+        <Block display="flex" border="2px solid black" height="70px" alignItems="center">
           <Block display="flex" justifyContent="center" flexDirection="column" alignItems="center">
             <Status completed={status.selected} />
             <span>Selected data</span>
@@ -183,7 +188,7 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
               </Block>
               <hr style={{ width: "100%" }} />
               <Block margin="0" width="100%">
-                <Button onClick={activateNetwork} disabled={status.normalised && status.selected && status.trained ? false : true} width="100%">
+                <Button onClick={activateNetwork} locked={status.normalised && status.selected && status.trained ? false : true} width="100%">
                   Use neural network
                 </Button>
               </Block>
