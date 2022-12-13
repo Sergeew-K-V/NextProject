@@ -61,10 +61,20 @@ const DataBasePage: NextPage<DataBasePageProps> = ({ weatherData, setWeatherData
       <Heading>Database page</Heading>
       <Block width="100%" margin="0 0 3rem" display="flex">
         <Block flex="0 1 25%">
-          <DoughnutDiagram label="Country" labelList={doughnut ? doughnut.data.coutries : []} colors={doughnut?.colors ? doughnut.colors : []} />
+          <DoughnutDiagram
+            title="Country"
+            label="Country"
+            labelList={doughnut ? doughnut.data.coutries : []}
+            colors={doughnut?.colors ? doughnut.colors : []}
+          />
         </Block>
         <Block flex="0 1 25%">
-          <DoughnutDiagram label="City" labelList={doughnut ? doughnut.data.cities : []} colors={doughnut?.colors ? doughnut.colors : []} />
+          <DoughnutDiagram
+            title="City"
+            label="City"
+            labelList={doughnut ? doughnut.data.cities : []}
+            colors={doughnut?.colors ? doughnut.colors : []}
+          />
         </Block>
       </Block>
       <Title style={{ margin: "1rem" }}>Total count of data: {loading ? "loading..." : weatherData?.length}</Title>
