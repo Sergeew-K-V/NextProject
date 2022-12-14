@@ -1,7 +1,7 @@
 import { GetParentPath } from "./GetParentPath"
 import QueryRangesLogic from "./QueryRangesLogic"
 import QueryFilterLogic from "./QueryFilterLogic"
-import { MakeNormalisation, MakeDeNormalisation, MakeNormalisationForActivate } from "./Normalisation"
+import { MakeNormalisation, MakeDeNormalisation } from "./Normalisation"
 import { MaximalInput, MinimalInput } from "./InputsRange"
 import GetColors from "./GetColors"
 import GetArrayForDoughnut from "./GetArrayForDoughnut"
@@ -17,6 +17,5 @@ export {
   MakeDeNormalisation,
   GetArrayForDoughnut,
   GetColors,
-  MakeNormalisationForActivate,
   isLocked,
 }

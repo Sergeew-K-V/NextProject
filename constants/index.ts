@@ -1,5 +1,7 @@
-export const REQUEST_LIMIT = '?_limit=5'
-export const DEFAULT_CATEGORY = 'sandwiches'
+import { Weather } from "../types/LabsTypes"
+
+export const REQUEST_LIMIT = "?_limit=5"
+export const DEFAULT_CATEGORY = "sandwiches"
 export const EMPTY_RANGE_LIMIT = 100
 export const Kelvin = 273.15
 
@@ -17,8 +19,8 @@ export const WeatherRange = {
 }
 
 export const LocationNovocherkassk = {
-  name: 'Novocherkassk',
-  country: 'RU',
+  name: "Novocherkassk",
+  country: "RU",
   coord: { lat: 47.4, lon: 40.04 },
 }
 
@@ -33,91 +35,91 @@ export const defaultStateOfNetworkPayload = [
   {
     _id: calculateId(),
     main: { pressure: 758, humidity: 75, temp: 5.5, temp_min: 3, temp_max: 8 },
-    city: { ...LocationNovocherkassk },
+    city: { coord: { ...LocationNovocherkassk } },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 757, humidity: 74, temp: 7, temp_min: 6, temp_max: 8 },
-    city: { ...LocationNovocherkassk },
+    isForcity: { coord: { ...LocationNovocherkassk } },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 757, humidity: 73, temp: 9, temp_min: 8, temp_max: 10 },
-    city: { ...LocationNovocherkassk },
+    isForcity: { coord: { ...LocationNovocherkassk } },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 757, humidity: 75, temp: 8, temp_min: 6, temp_max: 10 },
-    city: { ...LocationNovocherkassk },
+    isForcity: { coord: { ...LocationNovocherkassk } },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 759, humidity: 73, temp: 7.5, temp_min: 6, temp_max: 9 },
-    city: { ...LocationNovocherkassk },
+    isForcity: { coord: { ...LocationNovocherkassk } },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 758, humidity: 74, temp: 8.5, temp_min: 7, temp_max: 10 },
-    city: { ...LocationNovocherkassk },
+    isForcity: { coord: { ...LocationNovocherkassk } },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 759, humidity: 70, temp: 8, temp_min: 6, temp_max: 8 },
-    city: { ...LocationNovocherkassk },
+    isForcity: { coord: { ...LocationNovocherkassk } },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 757, humidity: 75, temp: 8.5, temp_min: 7, temp_max: 10 },
-    city: { ...LocationNovocherkassk },
+    isForcity: { coord: { ...LocationNovocherkassk } },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 757, humidity: 74, temp: 8.5, temp_min: 7, temp_max: 10 },
-    city: { ...LocationNovocherkassk },
+    isForcity: { coord: { ...LocationNovocherkassk } },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 755, humidity: 73, temp: 9.5, temp_min: 8, temp_max: 11 },
-    city: { ...LocationNovocherkassk },
+    isForcity: { coord: { ...LocationNovocherkassk } },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 757, humidity: 74, temp: 6.5, temp_min: 7, temp_max: 10 },
-    city: { ...LocationNovocherkassk },
+    isForcity: { coord: { ...LocationNovocherkassk } },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 758, humidity: 79, temp: 8, temp_min: 7, temp_max: 9 },
-    city: { ...LocationNovocherkassk },
+    isForcity: { coord: { ...LocationNovocherkassk } },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 758, humidity: 81, temp: 8, temp_min: 7, temp_max: 9 },
-    city: { ...LocationNovocherkassk },
+    isForcity: { coord: { ...LocationNovocherkassk } },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 757, humidity: 81, temp: 6.5, temp_min: 5, temp_max: 8 },
-    city: { ...LocationNovocherkassk },
+    isForcity: { coord: { ...LocationNovocherkassk } },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 758, humidity: 81, temp: 4, temp_min: 3, temp_max: 5 },
-    city: { ...LocationNovocherkassk },
+    isForcity: { coord: { ...LocationNovocherkassk } },
     selected: false,
   },
 ]

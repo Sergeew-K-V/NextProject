@@ -17,17 +17,17 @@ import {
   Checkbox,
 } from "../../../components/elements"
 import { defaultStateOfNetworkPayload, WeatherRange } from "../../../constants"
-import { PayloadWeatherDataProps } from "../../../types/LabsTypes"
-import { isLocked, MakeNormalisation, MakeNormalisationForActivate } from "../../../utils"
+import { PayloadWeatherDataProps, Weather } from "../../../types/LabsTypes"
+import { isLocked, MakeNormalisation } from "../../../utils"
 import { Architect, Trainer } from "synaptic"
 
 interface NeuralNetworkPageProps {
-  weatherData: any[] | null
+  weatherData: Weather[] | null
 }
 
 const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) => {
   const [isForm, setIsForm] = useState<boolean>(true)
-
+  console.log(weatherData)
   const [status, setStatus] = useState({
     trained: false,
     selected: false,
@@ -72,6 +72,7 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
     })
 
     if (!normalisatedData) return ""
+    console.log(normalisatedData)
     const result = trainer.train(normalisatedData, trainingSet)
     setNeuralNetwork({ ...neuralNetwork })
     setTrainerResult({ ...result })
@@ -81,7 +82,8 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
   const handleNormalisation = (event: any) => {
     event?.preventDefault()
     if (isForm) {
-      const normalObj = MakeNormalisationForActivate(form)
+      const normalObj = MakeNormalisation(form)
+      console.log(normalObj)
       setNormalForm(normalObj)
       setStatus({ ...status, normalised: true })
     } else {
