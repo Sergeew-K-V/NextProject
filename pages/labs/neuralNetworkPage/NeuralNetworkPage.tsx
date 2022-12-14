@@ -1,39 +1,37 @@
 import { NextPage } from "next"
 import { useEffect, useState } from "react"
 import { PayloadWeatherData } from "../../../components"
-import { Block, Button, Controlers, DashBoard, Form, Heading, Input, Title, StatusBar, Status } from "../../../components/elements"
-import { defaultStateOfNetworkPayload } from "../../../constants"
+import {
+  Block,
+  Button,
+  Controlers,
+  DashBoard,
+  Form,
+  Heading,
+  Input,
+  Title,
+  StatusBar,
+  Status,
+  NetworkForm,
+  Label,
+  Checkbox,
+} from "../../../components/elements"
+import { defaultStateOfNetworkPayload, WeatherRange } from "../../../constants"
 import { PayloadWeatherDataProps } from "../../../types/LabsTypes"
-import { MakeNormalisation, MakeNormalisationForActivate } from "../../../utils"
+import { isLocked, MakeNormalisation, MakeNormalisationForActivate } from "../../../utils"
 import { Architect, Trainer } from "synaptic"
-import styled from "styled-components"
 
 interface NeuralNetworkPageProps {
   weatherData: any[] | null
 }
 
 const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) => {
-  const [isShowForm, setIsShowForm] = useState<boolean>(true)
-
-  const [neuralNetwork, setNeuralNetwork] = useState<any>()
-  const [networkPayload, setNetworkPayload] = useState<Array<any>>(defaultStateOfNetworkPayload)
-
-  const [selectedAssets, setSelectedAssets] = useState<Array<any>>([])
-  const [normalisedSelectedAssets, setNormalisedSelectedAssets] = useState<Array<any>>([])
-
-  const [trainingSet, setTrainingSet] = useState({
-    rate: 0.1,
-    iterations: 20000,
-    error: 0.0003,
-  })
-  const [trainerResult, setTrainerResult] = useState<{ error: number; iterations: number; time: number } | null>(null)
+  const [isForm, setIsForm] = useState<boolean>(true)
 
   const [status, setStatus] = useState({
     trained: false,
-
     selected: false,
     normalised: false,
-
     filled: false,
   })
 
@@ -44,11 +42,25 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
     humidity: 0,
   })
 
-  const changeForm = (event: any, name: string) => {
+  const [trainingSet, setTrainingSet] = useState({
+    rate: 0.1,
+    iterations: 20000,
+    error: 0.0003,
+  })
+
+  const [neuralNetwork, setNeuralNetwork] = useState<any>()
+  const [networkPayload, setNetworkPayload] = useState<Array<any>>(defaultStateOfNetworkPayload)
+
+  const [selectedAssets, setSelectedAssets] = useState<Array<any>>([])
+  const [normalisedSelectedAssets, setNormalisedSelectedAssets] = useState<Array<any>>([])
+
+  const [trainerResult, setTrainerResult] = useState<{ error: number; iterations: number; time: number } | null>(null)
+
+  const changeForm = (event: React.ChangeEvent<HTMLInputElement>, name: string) => {
     setForm({ ...form, [name]: Number(event.target.value) })
   }
 
-  const [normalForm, setNormalForm] = useState()
+  const [normalForm, setNormalForm] = useState<any>()
 
   const NetworkHandler = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
@@ -58,6 +70,7 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
     const normalisatedData = weatherData?.map((el) => {
       return MakeNormalisation(el)
     })
+
     if (!normalisatedData) return ""
     const result = trainer.train(normalisatedData, trainingSet)
     setNeuralNetwork({ ...neuralNetwork })
@@ -67,7 +80,7 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
 
   const handleNormalisation = (event: any) => {
     event?.preventDefault()
-    if (isShowForm) {
+    if (isForm) {
       const normalObj = MakeNormalisationForActivate(form)
       setNormalForm(normalObj)
       setStatus({ ...status, normalised: true })
@@ -117,14 +130,19 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
 
   const activateNetwork = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
-    const activatedData = normalisedSelectedAssets.map((el) => {
-      return neuralNetwork.activate(el.input)
-    })
-    console.log(activatedData)
+    if (isForm) {
+      const activatedData = neuralNetwork.activate(normalForm.input)
+      console.log(activatedData)
+    } else {
+      const activatedData = normalisedSelectedAssets.map((el) => {
+        return neuralNetwork.activate(el.input)
+      })
+      console.log(activatedData)
+    }
   }
 
   useEffect(() => {
-    if (isShowForm) {
+    if (isForm) {
       if (form.humidity && form.lat && form.lon && form.pressure) {
         setStatus({ ...status, filled: true })
       } else {
@@ -144,34 +162,12 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
       <Block display="flex">
         <Block>
           <Heading>Network page</Heading>
-          <Title style={{ margin: "1rem" }}>Total count of data for trainer: {weatherData?.length}</Title>
-        </Block>
-        <Block display="flex" border="2px solid black" height="70px" width="270px" justifyContent="center" alignItems="center">
-          {!isShowForm && (
-            <Block display="flex" justifyContent="center" flexDirection="column" alignItems="center">
-              <Status completed={status.selected} />
-              <span>Selected data</span>
-            </Block>
-          )}
-          {isShowForm && (
-            <Block display="flex" justifyContent="center" flexDirection="column" alignItems="center">
-              <Status completed={status.filled} />
-              <span>Filled</span>
-            </Block>
-          )}
-          <Block display="flex" justifyContent="center" flexDirection="column" alignItems="center">
-            <Status completed={status.trained} />
-            <span>Trained</span>
-          </Block>
-          <Block display="flex" justifyContent="center" flexDirection="column" alignItems="center">
-            <Status completed={status.normalised} />
-            <span>Normalised</span>
-          </Block>
+          <Title>Total count of data for trainer: {weatherData?.length}</Title>
         </Block>
       </Block>
       <Block display="flex" justifyContent="space-between" width="100%" margin="0 0 3rem">
-        {!isShowForm && (
-          <DashBoard height="740px">
+        {!isForm && (
+          <DashBoard height="740px" flex="0 0 82%">
             {networkPayload
               ? networkPayload.map((data) => (
                   <PayloadWeatherData
@@ -190,73 +186,98 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
               : "Weather data wasn't download"}
           </DashBoard>
         )}
-        {isShowForm && (
+        {isForm && (
           <>
             <NetworkForm>
-              <Title style={{ textAlign: "center" }}>Insert options for forecasting</Title>
-              <Block margin="1rem " width="auto">
-                <Label>Latitude:</Label>
+              <Title textAlign="center">Insert options for forecasting</Title>
+              <Block margin="1rem" width="100%">
+                <Label>Write latitude of region:</Label>
                 <Input
-                  style={{ width: "100%" }}
+                  type="number"
                   width="90%"
-                  placeholder="Write latitude of region"
                   value={form.lat}
+                  max={WeatherRange.latMax}
+                  min={WeatherRange.latMin}
                   onChange={(event) => changeForm(event, "lat")}
                 />
               </Block>
-              <Block margin="1rem " width="auto">
-                <Label>Longitude:</Label>
+              <Block margin="1rem" width="100%">
+                <Label>Write longitude of region:</Label>
                 <Input
-                  style={{ width: "100%" }}
-                  placeholder="Write longitude of region"
+                  type="number"
+                  width="90%"
                   value={form.lon}
+                  max={WeatherRange.lonMax}
+                  min={WeatherRange.lonMin}
                   onChange={(event) => changeForm(event, "lon")}
                 />
               </Block>
-              <Block margin="1rem " width="auto">
-                <Label>Pressure:</Label>
+              <Block margin="1rem" width="100%">
+                <Label>Write pressure of region:</Label>
                 <Input
+                  type="number"
                   width="90%"
-                  style={{ width: "100%" }}
-                  placeholder="Write pressure of region"
                   value={form.pressure}
+                  max={WeatherRange.pressureMax}
+                  min={WeatherRange.pressureMin}
                   onChange={(event) => changeForm(event, "pressure")}
                 />
               </Block>
-              <Block margin="1rem " width="auto">
-                <Label>Humidity:</Label>
+              <Block margin="1rem" width="100%">
+                <Label>Write humidity of region:</Label>
                 <Input
+                  type="number"
                   width="90%"
-                  style={{ width: "100%" }}
-                  placeholder="Write humidity of region"
                   value={form.humidity}
+                  max={WeatherRange.humidityMax}
+                  min={WeatherRange.humidityMin}
                   onChange={(event) => changeForm(event, "humidity")}
                 />
               </Block>
             </NetworkForm>
-            <DashBoard style={{ flex: "0 1 65%", height: "732px" }}></DashBoard>
+            <DashBoard height="auto" minHeight="100%" flex="0 0 65%"></DashBoard>
           </>
         )}
 
-        <Controlers>
+        <Controlers flex="0 0 16%">
+          <StatusBar>
+            {!isForm && (
+              <Block display="flex" justifyContent="center" flexDirection="column" alignItems="center">
+                <Status completed={status.selected} />
+                <span>Selected data</span>
+              </Block>
+            )}
+            {isForm && (
+              <Block display="flex" justifyContent="center" flexDirection="column" alignItems="center">
+                <Status completed={status.filled} />
+                <span>Filled</span>
+              </Block>
+            )}
+            <Block display="flex" justifyContent="center" flexDirection="column" alignItems="center">
+              <Status completed={status.trained} />
+              <span>Trained</span>
+            </Block>
+            <Block display="flex" justifyContent="center" flexDirection="column" alignItems="center">
+              <Status completed={status.normalised} />
+              <span>Normalised</span>
+            </Block>
+          </StatusBar>
           <Block width="100%">
             <Form>
               <Block display="flex" alignItems="center" justifyContent="space-between" width="100%" margin="0">
                 <Title>Network Controller</Title>
-                <Checkbox selected={isShowForm}>
+                <Checkbox selected={isForm} selectedColor="#145f69" defaultColor="#fff">
                   <div className="label" />
-                  <input id="checkbox" type="checkbox" checked={isShowForm} onChange={() => setIsShowForm(!isShowForm)} />
+                  <input id="checkbox" type="checkbox" checked={isForm} onChange={() => setIsForm(!isForm)} />
                 </Checkbox>
               </Block>
-              {!isShowForm && (
-                <>
-                  <Block justifyContent="space-between" display="flex" width="100%" margin="0">
-                    <Button onClick={selectAllHandler}>Select all</Button>
-                    <Button onClick={clearHandler}>Clear choses</Button>
-                  </Block>
-                  <hr style={{ width: "100%" }} />
-                </>
+              {!isForm && (
+                <Block justifyContent="space-between" display="flex" width="100%" margin="0">
+                  <Button onClick={selectAllHandler}>Select all</Button>
+                  <Button onClick={clearHandler}>Clear choses</Button>
+                </Block>
               )}
+              <hr style={{ width: "100%" }} />
               <Block>
                 <Title>Training options</Title>
                 <Block>
@@ -271,7 +292,7 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
                   />
                 </Block>
                 <Block>
-                  <div> Approximate error:</div>
+                  <div>Approximate error:</div>
                   <Input value={trainingSet.error} onChange={(event) => setTrainingSet({ ...trainingSet, error: Number(event.target.value) })} />
                 </Block>
               </Block>
@@ -282,7 +303,6 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
                 </Button>
               </Block>
               <hr style={{ width: "100%" }} />
-
               <Block margin="0" width="100%">
                 <Button onClick={(event) => handleNormalisation(event)} width="100%">
                   Normalisation
@@ -290,25 +310,13 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
               </Block>
               <hr style={{ width: "100%" }} />
               <Block margin="0" width="100%">
-                <Button
-                  onClick={activateNetwork}
-                  locked={
-                    isShowForm
-                      ? status.normalised && status.filled && status.trained
-                        ? false
-                        : true
-                      : status.normalised && status.selected && status.trained
-                      ? false
-                      : true
-                  }
-                  width="100%"
-                >
+                <Button onClick={activateNetwork} locked={isLocked(isForm, status)} width="100%">
                   Use neural network
                 </Button>
               </Block>
               <Block>
                 <Title>Training results</Title>
-                <Block margin="0.5rem ">Result error: {trainerResult?.error}</Block>
+                <Block margin="0.5rem ">Result error: {trainerResult?.error.toFixed(5)}</Block>
                 <Block margin="0.5rem ">Result iterations: {trainerResult?.iterations}</Block>
                 <Block margin="0.5rem ">Result time: {trainerResult?.time}</Block>
               </Block>
@@ -321,73 +329,3 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
 }
 
 export default NeuralNetworkPage
-
-interface CheckBoxProps {
-  selected?: boolean
-}
-
-const NetworkForm = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 0 0 14%;
-  height: px;
-  border: 2px solid #000;
-  border-radius: 5px;
-  margin: 0 1rem;
-`
-
-const Label = styled.div`
-  font-size: 1.5rem;
-  font-weight: 600;
-`
-
-const Checkbox = styled.div<CheckBoxProps>`
-  z-index: 1;
-  height: 1.5rem;
-  width: 1.5rem;
-  margin: 0.25rem;
-  position: relative;
-
-  .label {
-    position: absolute;
-    left: 0;
-    top: 0;
-    background-color: #fff;
-    border: 1px solid #000;
-    border-radius: 50%;
-    height: 1.5rem;
-    width: 1.5rem;
-  }
-
-  ${({ selected }) =>
-    selected
-      ? `
-      .label:after {
-        opacity:1;
-      }
-      .label {
-        border-color: #000;
-        background-color: #145f69;
-      }`
-      : ""}
-
-  .label:after {
-    position: absolute;
-    border: 2px solid #000;
-    border-top: none;
-    border-right: none;
-    content: "";
-    height: 0.5rem;
-    opacity: 0;
-    transform: translate(25%, 50%) rotate(-45deg);
-    width: 0.8rem;
-  }
-
-  input[type="checkbox"] {
-    opacity: 0;
-    cursor: pointer;
-    width: 1.5rem;
-    height: 1.5rem;
-    margin: 0;
-  }
-`

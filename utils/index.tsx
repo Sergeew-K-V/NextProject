@@ -5,6 +5,7 @@ import { MakeNormalisation, MakeDeNormalisation, MakeNormalisationForActivate } 
 import { MaximalInput, MinimalInput } from "./InputsRange"
 import GetColors from "./GetColors"
 import GetArrayForDoughnut from "./GetArrayForDoughnut"
+import isLocked from "./IsLocked"
 
 export {
   GetParentPath,
@@ -17,4 +18,5 @@ export {
   GetArrayForDoughnut,
   GetColors,
   MakeNormalisationForActivate,
+  isLocked,
 }
