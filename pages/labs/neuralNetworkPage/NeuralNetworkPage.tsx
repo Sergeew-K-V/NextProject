@@ -1,24 +1,10 @@
 import { NextPage } from "next"
 import { useEffect, useState } from "react"
 import { PayloadWeatherData } from "../../../components"
-import {
-  Block,
-  Button,
-  Controlers,
-  DashBoard,
-  Form,
-  Heading,
-  Input,
-  Title,
-  StatusBar,
-  Status,
-  NetworkForm,
-  Label,
-  Checkbox,
-} from "../../../components/elements"
+import { Block, Button, Controlers, DashBoard, Form, Heading, Input, Title, StatusBar, Status, NetworkForm, Label, Checkbox } from "../../../components/elements"
 import { defaultStateOfNetworkPayload, WeatherRange } from "../../../constants"
 import { PayloadWeatherDataProps, Weather } from "../../../types/LabsTypes"
-import { isLocked, MakeNormalisation } from "../../../utils"
+import { isLocked, MakeDeNormalisation, MakeNormalisation } from "../../../utils"
 import { Architect, Trainer } from "synaptic"
 
 interface NeuralNetworkPageProps {
@@ -27,7 +13,6 @@ interface NeuralNetworkPageProps {
 
 const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) => {
   const [isForm, setIsForm] = useState<boolean>(true)
-  console.log(weatherData)
   const [status, setStatus] = useState({
     trained: false,
     selected: false,
@@ -56,6 +41,8 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
 
   const [trainerResult, setTrainerResult] = useState<{ error: number; iterations: number; time: number } | null>(null)
 
+  const [total, setTotal] = useState<Array<any>>()
+
   const changeForm = (event: React.ChangeEvent<HTMLInputElement>, name: string) => {
     setForm({ ...form, [name]: Number(event.target.value) })
   }
@@ -72,7 +59,6 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
     })
 
     if (!normalisatedData) return ""
-    console.log(normalisatedData)
     const result = trainer.train(normalisatedData, trainingSet)
     setNeuralNetwork({ ...neuralNetwork })
     setTrainerResult({ ...result })
@@ -82,8 +68,13 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
   const handleNormalisation = (event: any) => {
     event?.preventDefault()
     if (isForm) {
-      const normalObj = MakeNormalisation(form)
-      console.log(normalObj)
+      const fullForm = {
+        main: { pressure: form.pressure, humidity: form.humidity },
+        city: {
+          coord: { lat: form.lat, lon: form.lon },
+        },
+      }
+      const normalObj = MakeNormalisation(fullForm)
       setNormalForm(normalObj)
       setStatus({ ...status, normalised: true })
     } else {
@@ -135,6 +126,10 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
     if (isForm) {
       const activatedData = neuralNetwork.activate(normalForm.input)
       console.log(activatedData)
+      const arr: number[] = []
+      const obj = { ...form, temp: MakeDeNormalisation(activatedData)[0] }
+      arr?.push(obj)
+      setTotal(arr)
     } else {
       const activatedData = normalisedSelectedAssets.map((el) => {
         return neuralNetwork.activate(el.input)
@@ -194,50 +189,28 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
               <Title textAlign="center">Insert options for forecasting</Title>
               <Block margin="1rem" width="100%">
                 <Label>Write latitude of region:</Label>
-                <Input
-                  type="number"
-                  width="90%"
-                  value={form.lat}
-                  max={WeatherRange.latMax}
-                  min={WeatherRange.latMin}
-                  onChange={(event) => changeForm(event, "lat")}
-                />
+                <Input type="number" width="90%" value={form.lat} max={WeatherRange.latMax} min={WeatherRange.latMin} onChange={(event) => changeForm(event, "lat")} />
               </Block>
               <Block margin="1rem" width="100%">
                 <Label>Write longitude of region:</Label>
-                <Input
-                  type="number"
-                  width="90%"
-                  value={form.lon}
-                  max={WeatherRange.lonMax}
-                  min={WeatherRange.lonMin}
-                  onChange={(event) => changeForm(event, "lon")}
-                />
+                <Input type="number" width="90%" value={form.lon} max={WeatherRange.lonMax} min={WeatherRange.lonMin} onChange={(event) => changeForm(event, "lon")} />
               </Block>
               <Block margin="1rem" width="100%">
                 <Label>Write pressure of region:</Label>
-                <Input
-                  type="number"
-                  width="90%"
-                  value={form.pressure}
-                  max={WeatherRange.pressureMax}
-                  min={WeatherRange.pressureMin}
-                  onChange={(event) => changeForm(event, "pressure")}
-                />
+                <Input type="number" width="90%" value={form.pressure} max={WeatherRange.pressureMax} min={WeatherRange.pressureMin} onChange={(event) => changeForm(event, "pressure")} />
               </Block>
               <Block margin="1rem" width="100%">
                 <Label>Write humidity of region:</Label>
-                <Input
-                  type="number"
-                  width="90%"
-                  value={form.humidity}
-                  max={WeatherRange.humidityMax}
-                  min={WeatherRange.humidityMin}
-                  onChange={(event) => changeForm(event, "humidity")}
-                />
+                <Input type="number" width="90%" value={form.humidity} max={WeatherRange.humidityMax} min={WeatherRange.humidityMin} onChange={(event) => changeForm(event, "humidity")} />
               </Block>
             </NetworkForm>
-            <DashBoard height="auto" minHeight="100%" flex="0 0 65%"></DashBoard>
+            <DashBoard height="auto" minHeight="100%" flex="0 0 65%">
+              {total && total?.length !== 0
+                ? total.map((el, index) => {
+                    return <PayloadWeatherData _id={index} lat={form.lat} lon={form.lon} pressure={form.pressure} humidity={form.humidity} temp={el.temp.toFixed(1)} />
+                  })
+                : "no data"}
+            </DashBoard>
           </>
         )}
 
@@ -288,10 +261,7 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
                 </Block>
                 <Block>
                   <div>Number of iterations:</div>
-                  <Input
-                    value={trainingSet.iterations}
-                    onChange={(event) => setTrainingSet({ ...trainingSet, iterations: Number(event.target.value) })}
-                  />
+                  <Input value={trainingSet.iterations} onChange={(event) => setTrainingSet({ ...trainingSet, iterations: Number(event.target.value) })} />
                 </Block>
                 <Block>
                   <div>Approximate error:</div>

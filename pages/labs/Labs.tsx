@@ -1,11 +1,11 @@
-import { NextPage } from "next"
-import React, { useState } from "react"
-import { ContainerBig } from "../../components/Layouts"
-import { Button, Heading } from "../../components/elements"
-import { LabsProps, Pages } from "../../types/LabsTypes"
-import styled from "styled-components"
-import DataBasePage from "./dataBasePage"
-import NeuralNetworkPage from "./neuralNetworkPage"
+import { NextPage } from 'next'
+import React, { useState } from 'react'
+import { ContainerBig } from '../../components/Layouts'
+import { Button, Heading } from '../../components/elements'
+import { LabsProps, Pages } from '../../types/LabsTypes'
+import styled from 'styled-components'
+import DataBasePage from './dataBasePage'
+import NeuralNetworkPage from './neuralNetworkPage'
 
 const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
   const [activePage, setActivePage] = useState<Pages>(Pages.DataBasePage)
@@ -28,7 +28,7 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
       <Heading>This page for labs works with databases and Neural Network</Heading>
       <NavigationBlock>
         <Button
-          margin="0 1rem"
+          margin='0 1rem'
           onClick={() => {
             setActivePage(Pages.DataBasePage)
           }}
@@ -36,7 +36,7 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
           DataBase
         </Button>
         <Button
-          margin="0 1rem"
+          margin='0 1rem'
           onClick={() => {
             setActivePage(Pages.NeuralNetworkPage)
           }}
@@ -45,7 +45,6 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
         </Button>
       </NavigationBlock>
       {DisplayActivePage(activePage)}
-      <StatusBar></StatusBar>
     </ContainerBig>
   )
 }
@@ -57,4 +56,3 @@ const NavigationBlock = styled.div`
   display: flex;
   justify-content: flex-start;
 `
-const StatusBar = styled.div``
