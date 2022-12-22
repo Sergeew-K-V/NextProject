@@ -33,10 +33,10 @@ const JavaPage: NextPage = () => {
         <Controlers>
           <Block display="flex" flexDirection="column">
             <Title>Add latitude for request:</Title>
-            <Input value={lat} onChange={(event) => setLat(event.target.value)} type="number" />
+            <Input value={lat} onChange={(event) => setLat(Number(event.target.value))} type="number" />
 
             <Title>Add longtitude for request:</Title>
-            <Input value={lng} onChange={(event) => setLng(event.target.value)} type="number" />
+            <Input value={lng} onChange={(event) => setLng(Number(event.target.value))} type="number" />
             <Block>
               <Button onClick={submitHandler}>Make request</Button>
             </Block>

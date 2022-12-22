@@ -180,7 +180,7 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
         setStatus({ ...status, selected: false })
       }
     }
-  }, [selectedAssets, form])
+  }, [selectedAssets, form, status, isForm])
 
   return (
     <>
@@ -267,6 +267,7 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
                 ? total.map((el, index) => {
                     return (
                       <PayloadWeatherData
+                        key={el._id}
                         _id={index}
                         lat={el.lat}
                         lon={el.lon}

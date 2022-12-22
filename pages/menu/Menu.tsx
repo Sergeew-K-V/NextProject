@@ -38,7 +38,7 @@ const Menu: NextPage<any> = ({ menuProp }: { menuProp: Array<any> }) => {
 
   useEffect(() => {
     setProducts(menu.filter((el) => el.category === DEFAULT_CATEGORY))
-  }, [])
+  }, [menu])
 
   return (
     <ContainerBig>
