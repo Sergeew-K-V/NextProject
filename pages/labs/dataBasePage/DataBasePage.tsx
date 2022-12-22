@@ -2,7 +2,7 @@ import { NextPage } from "next"
 import { useMemo, useState } from "react"
 import { DoughnutDiagram, WeatherData } from "../../../components"
 import { Block, Controlers, DashBoard, Form, Heading, Input, Loader, Title, Option, Select, Button } from "../../../components/elements"
-import { URL_LABS_SERVER,URL_LABS_SERVER_DEV } from "../../../constants/URLS"
+import { URL_LABS_SERVER, URL_LABS_SERVER_DEV } from "../../../constants/URLS"
 import { useFetch } from "../../../hooks/useFetch"
 import { WeatherFilter } from "../../../types/LabsTypes"
 import { GetArrayForDoughnut, GetColors, MaximalInput, MinimalInput, QueryFilterLogic, QueryRangesLogic } from "../../../utils"
@@ -21,8 +21,12 @@ const DataBasePage: NextPage<DataBasePageProps> = ({ weatherData, setWeatherData
   const [requestFilterValue, setRequestFilterValue] = useState<string | number>("")
 
   const diagramData: any = useMemo(() => {
-    const data = weatherData?.slice(0, 100)
-    return data
+    if (weatherData) {
+      const data = weatherData?.slice(0, 100)
+      return data
+    } else {
+      return []
+    }
   }, [weatherData])
 
   const doughnut = useMemo(() => {
@@ -31,7 +35,7 @@ const DataBasePage: NextPage<DataBasePageProps> = ({ weatherData, setWeatherData
         data: { coutries: GetArrayForDoughnut(diagramData, "city.country"), cities: GetArrayForDoughnut(diagramData, "city.name") },
         colors: diagramData ? GetColors(diagramData) : [],
       }
-  }, [weatherData,diagramData])
+  }, [weatherData, diagramData])
 
   const getWeatherData = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
@@ -44,7 +48,10 @@ const DataBasePage: NextPage<DataBasePageProps> = ({ weatherData, setWeatherData
       setWeatherData(data)
     } else {
       const data = await request(
-        `${URL_LABS_SERVER}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(requestFilterType, requestFilterValue)}`
+        `${URL_LABS_SERVER}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(
+          requestFilterType,
+          requestFilterValue
+        )}`
       )
       setWeatherData(data)
     }
