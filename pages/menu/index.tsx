@@ -8,7 +8,7 @@ export default Menu
 // PROD - URL_SERVER
 
 export async function getStaticProps() {
-  const responce = await fetch(URL_SERVER_DEV)
+  const responce = await fetch(URL_SERVER)
   const data = await responce.json()
   const menuProp: Array<any> = data.menu
 

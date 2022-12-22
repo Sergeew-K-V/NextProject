@@ -6,12 +6,12 @@ import { ContainerBig } from '../../components/Layouts'
 import styles from '../../scss/Crypto.module.scss'
 
 const Crypto: NextPage<PropsWithChildren> = () => {
-  const [connected, setConnected] = useState<boolean>(true)
-  const web3 = new Web3('ws://localhost:3000')
+  // const [connected, setConnected] = useState<boolean>(true)
+  // const web3 = new Web3('ws://localhost:3000')
 
-  const mintHandler = () => {
-    console.log(web3)
-  }
+  // const mintHandler = () => {
+  //   console.log(web3)
+  // }
 
   return (
     <ContainerBig>
@@ -26,9 +26,9 @@ const Crypto: NextPage<PropsWithChildren> = () => {
           </div>
           <button className={styles.btn}>Connect wallet</button>
           <div className={styles.description}>Let`s go to mint your token!</div>
-          <button onClick={mintHandler} className={styles.btn} disabled={connected ? false : true}>
+          {/* <button onClick={mintHandler} className={styles.btn} disabled={connected ? false : true}>
             Mint token
-          </button>
+          </button> */}
         </form>
       </div>
     </ContainerBig>
