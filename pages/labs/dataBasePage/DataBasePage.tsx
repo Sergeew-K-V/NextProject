@@ -8,21 +8,21 @@ import { WeatherFilter } from "../../../types/LabsTypes"
 import { GetArrayForDoughnut, GetColors, MaximalInput, MinimalInput, QueryFilterLogic, QueryRangesLogic } from "../../../utils"
 
 interface DataBasePageProps {
-  weatherData: any[] | null
-  setWeatherData: React.Dispatch<React.SetStateAction<any[] | null>>
+  weatherData: any[] | string | null
+  setWeatherData: React.Dispatch<React.SetStateAction<any[] | string | null>>
 }
 
 const DataBasePage: NextPage<DataBasePageProps> = ({ weatherData, setWeatherData }) => {
   const { request, loading } = useFetch()
-
+  
   const [requestRangeBottom, setRequestRangeBottom] = useState<number>(0)
   const [requestRangeTop, setRequestRangeTop] = useState<number>(0)
   const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(WeatherFilter.city)
   const [requestFilterValue, setRequestFilterValue] = useState<string | number>("")
 
   const diagramData: any = useMemo(() => {
-    if (weatherData) {
-      const data = weatherData?.slice(0, 100)
+    if (Array.isArray(weatherData)) {
+      const data = weatherData.slice(0,100)
       return data
     } else {
       return []

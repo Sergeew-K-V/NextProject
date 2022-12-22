@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ContainerBig } from '../../components/Layouts'
 import { Button, Heading } from '../../components/elements'
 import { LabsProps, Pages } from '../../types/LabsTypes'
@@ -10,8 +10,8 @@ import NeuralNetworkPage from './neuralNetworkPage'
 const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
   const [activePage, setActivePage] = useState<Pages>(Pages.DataBasePage)
 
-  const [weatherData, setWeatherData] = useState<any[] | null>(preloadWeatherData)
-
+  const [weatherData, setWeatherData] = useState<any[] | string | null>(null)
+  
   const DisplayActivePage = (page: Pages) => {
     switch (page) {
       case Pages.NeuralNetworkPage:
@@ -22,6 +22,14 @@ const Labs: NextPage<LabsProps> = ({ preloadWeatherData }) => {
         return <h1>Select page</h1>
     }
   }
+
+  useEffect(()=>{
+    if(!Array.isArray(preloadWeatherData)){
+      setWeatherData(preloadWeatherData.message)
+    }else{
+      setWeatherData(preloadWeatherData)
+    }
+  },[preloadWeatherData])
 
   return (
     <ContainerBig>

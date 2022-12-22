@@ -22,7 +22,7 @@ import { isLocked, MakeDeNormalisation, MakeNormalisation } from "../../../utils
 import { Architect, Trainer } from "synaptic"
 
 interface NeuralNetworkPageProps {
-  weatherData: Weather[] | null
+  weatherData: Weather[] | string | null
 }
 
 const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) => {
@@ -67,6 +67,8 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
 
   const NetworkHandler = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
+    if(Array.isArray(weatherData)){
+      
     const neuralNetwork = new Architect.Perceptron(4, 3, 1)
     const trainer = new Trainer(neuralNetwork)
 
@@ -93,6 +95,9 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
     setNeuralNetwork({ ...neuralNetwork })
     setTrainerResult({ ...result })
     setStatus({ ...status, trained: true })
+    }else{
+      return ''
+    }
   }
 
   const handleNormalisation = (event: any) => {
