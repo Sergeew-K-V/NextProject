@@ -1,4 +1,4 @@
-import { URL_LABS } from '../constants/URLS'
+import { URL_LABS_SERVER, URL_LABS_SERVER_DEV } from '../constants/URLS'
 import { useFetch } from './useFetch'
 
 export const useGenerator = () => {
@@ -25,7 +25,7 @@ export const useGenerator = () => {
           pressure: Math.random() * (maxPres - minPres) + minPres,
           windSpeed: Math.random() * (maxWindSpeed - minWindSpeed) + minWindSpeed,
         }
-        request(`${URL_LABS}/weatherdata`, 'POST', Obj)
+        request(`${URL_LABS_SERVER}/weatherdata`, 'POST', Obj)
       }
     } catch (error) {}
   }
