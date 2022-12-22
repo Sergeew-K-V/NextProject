@@ -19,8 +19,10 @@ export const WeatherRange = {
 }
 
 export const LocationNovocherkassk = {
-  name: "Novocherkassk",
-  country: "RU",
+  locationDetails: {
+    name: "Novocherkassk",
+    country: "RU",
+  },
   coord: { lat: 47.4, lon: 40.04 },
 }
 
@@ -35,91 +37,91 @@ export const defaultStateOfNetworkPayload = [
   {
     _id: calculateId(),
     main: { pressure: 758, humidity: 75, temp: 5.5, temp_min: 3, temp_max: 8 },
-    city: { coord: { ...LocationNovocherkassk } },
+    city: { coord: { ...LocationNovocherkassk.coord }, ...LocationNovocherkassk.locationDetails },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 757, humidity: 74, temp: 7, temp_min: 6, temp_max: 8 },
-    isForcity: { coord: { ...LocationNovocherkassk } },
+    city: { coord: { ...LocationNovocherkassk.coord }, ...LocationNovocherkassk.locationDetails },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 757, humidity: 73, temp: 9, temp_min: 8, temp_max: 10 },
-    isForcity: { coord: { ...LocationNovocherkassk } },
+    city: { coord: { ...LocationNovocherkassk.coord }, ...LocationNovocherkassk.locationDetails },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 757, humidity: 75, temp: 8, temp_min: 6, temp_max: 10 },
-    isForcity: { coord: { ...LocationNovocherkassk } },
+    city: { coord: { ...LocationNovocherkassk.coord }, ...LocationNovocherkassk.locationDetails },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 759, humidity: 73, temp: 7.5, temp_min: 6, temp_max: 9 },
-    isForcity: { coord: { ...LocationNovocherkassk } },
+    city: { coord: { ...LocationNovocherkassk.coord }, ...LocationNovocherkassk.locationDetails },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 758, humidity: 74, temp: 8.5, temp_min: 7, temp_max: 10 },
-    isForcity: { coord: { ...LocationNovocherkassk } },
+    city: { coord: { ...LocationNovocherkassk.coord }, ...LocationNovocherkassk.locationDetails },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 759, humidity: 70, temp: 8, temp_min: 6, temp_max: 8 },
-    isForcity: { coord: { ...LocationNovocherkassk } },
+    city: { coord: { ...LocationNovocherkassk.coord }, ...LocationNovocherkassk.locationDetails },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 757, humidity: 75, temp: 8.5, temp_min: 7, temp_max: 10 },
-    isForcity: { coord: { ...LocationNovocherkassk } },
+    city: { coord: { ...LocationNovocherkassk.coord }, ...LocationNovocherkassk.locationDetails },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 757, humidity: 74, temp: 8.5, temp_min: 7, temp_max: 10 },
-    isForcity: { coord: { ...LocationNovocherkassk } },
+    city: { coord: { ...LocationNovocherkassk.coord }, ...LocationNovocherkassk.locationDetails },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 755, humidity: 73, temp: 9.5, temp_min: 8, temp_max: 11 },
-    isForcity: { coord: { ...LocationNovocherkassk } },
+    city: { coord: { ...LocationNovocherkassk.coord }, ...LocationNovocherkassk.locationDetails },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 757, humidity: 74, temp: 6.5, temp_min: 7, temp_max: 10 },
-    isForcity: { coord: { ...LocationNovocherkassk } },
+    city: { coord: { ...LocationNovocherkassk.coord }, ...LocationNovocherkassk.locationDetails },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 758, humidity: 79, temp: 8, temp_min: 7, temp_max: 9 },
-    isForcity: { coord: { ...LocationNovocherkassk } },
+    city: { coord: { ...LocationNovocherkassk.coord }, ...LocationNovocherkassk.locationDetails },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 758, humidity: 81, temp: 8, temp_min: 7, temp_max: 9 },
-    isForcity: { coord: { ...LocationNovocherkassk } },
+    city: { coord: { ...LocationNovocherkassk.coord }, ...LocationNovocherkassk.locationDetails },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 757, humidity: 81, temp: 6.5, temp_min: 5, temp_max: 8 },
-    isForcity: { coord: { ...LocationNovocherkassk } },
+    city: { coord: { ...LocationNovocherkassk.coord }, ...LocationNovocherkassk.locationDetails },
     selected: false,
   },
   {
     _id: calculateId(),
     main: { pressure: 758, humidity: 81, temp: 4, temp_min: 3, temp_max: 5 },
-    isForcity: { coord: { ...LocationNovocherkassk } },
+    city: { coord: { ...LocationNovocherkassk.coord }, ...LocationNovocherkassk.locationDetails },
     selected: false,
   },
 ]

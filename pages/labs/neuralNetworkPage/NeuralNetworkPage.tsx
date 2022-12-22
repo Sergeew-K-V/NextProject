@@ -85,9 +85,9 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
 
     const testingPart = normalisatedData?.slice(trainingPart?.length, maxLength)
 
-    const result = trainer.train(trainingPart, trainingSet)
+    const result = trainer.train(trainingPart as Trainer.TrainingSet, trainingSet)
 
-    const error = trainer.test(testingPart, trainingSet)
+    const error = trainer.test(testingPart as Trainer.TrainingSet, trainingSet)
     setTestError(error.error)
 
     setNeuralNetwork({ ...neuralNetwork })
@@ -194,20 +194,22 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
         {!isForm && (
           <DashBoard height="740px" flex="0 0 82%">
             {networkPayload
-              ? networkPayload.map((data) => (
-                  <PayloadWeatherData
-                    onSelect={async () => selectPayloadData(data)}
-                    key={data._id}
-                    city={data.city.name}
-                    country={data.city.country}
-                    temp={data.main.temp}
-                    pressure={data.main.pressure}
-                    humidity={data.main.humidity}
-                    lat={data.city.coord.lat}
-                    lon={data.city.coord.lon}
-                    selected={data.selected}
-                  />
-                ))
+              ? networkPayload.map((data) => {
+                  return (
+                    <PayloadWeatherData
+                      onSelect={async () => selectPayloadData(data)}
+                      key={data._id}
+                      city={data.city.name}
+                      country={data.city.country}
+                      temp={data.main.temp}
+                      pressure={data.main.pressure}
+                      humidity={data.main.humidity}
+                      lat={data.city.coord.lat}
+                      lon={data.city.coord.lon}
+                      selected={data.selected}
+                    />
+                  )
+                })
               : "Weather data wasn't download"}
           </DashBoard>
         )}

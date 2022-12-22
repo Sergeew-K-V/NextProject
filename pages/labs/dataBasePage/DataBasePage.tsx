@@ -31,7 +31,7 @@ const DataBasePage: NextPage<DataBasePageProps> = ({ weatherData, setWeatherData
         data: { coutries: GetArrayForDoughnut(diagramData, "city.country"), cities: GetArrayForDoughnut(diagramData, "city.name") },
         colors: diagramData ? GetColors(diagramData) : [],
       }
-  }, [weatherData])
+  }, [weatherData,diagramData])
 
   const getWeatherData = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
