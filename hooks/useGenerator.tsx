@@ -1,5 +1,5 @@
-import { URL_LABS_SERVER, URL_LABS_SERVER_DEV } from '../constants/URLS'
-import { useFetch } from './useFetch'
+import { URL_LABS_SERVER, URL_LABS_SERVER_DEV } from "../constants/URLS"
+import { useFetch } from "./useFetch"
 
 export const useGenerator = () => {
   const { request } = useFetch()
@@ -25,9 +25,11 @@ export const useGenerator = () => {
           pressure: Math.random() * (maxPres - minPres) + minPres,
           windSpeed: Math.random() * (maxWindSpeed - minWindSpeed) + minWindSpeed,
         }
-        request(`${URL_LABS_SERVER}/weatherdata`, 'POST', Obj)
+        request(`${URL_LABS_SERVER_DEV}/weatherdata`, "POST", Obj)
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error, "error")
+    }
   }
 
   return {

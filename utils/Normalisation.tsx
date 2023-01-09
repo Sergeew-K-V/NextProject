@@ -1,4 +1,4 @@
-import { WeatherRange } from '../constants'
+import { WeatherRange } from "../constants"
 
 export const MakeNormalisation = (obj: any) => {
   // input: pressure:, humidity, output: temp
@@ -10,7 +10,7 @@ export const MakeNormalisation = (obj: any) => {
       obj.city.coord.lon / (WeatherRange.lonMax - WeatherRange.lonMin),
     ],
   }
-  if (obj.main.temp) {
+  if (obj.main.temp !== undefined) {
     Object.assign(NORMAL_OBJ, {
       output: [obj.main.temp / (WeatherRange.tempMax - WeatherRange.tempMin)],
     })

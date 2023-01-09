@@ -1,5 +1,5 @@
 import { NextPage } from "next"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { DoughnutDiagram, WeatherData } from "../../../components"
 import { Block, Controlers, DashBoard, Form, Heading, Input, Loader, Title, Option, Select, Button } from "../../../components/elements"
 import { URL_LABS_SERVER, URL_LABS_SERVER_DEV } from "../../../constants/URLS"
@@ -14,7 +14,7 @@ interface DataBasePageProps {
 
 const DataBasePage: NextPage<DataBasePageProps> = ({ weatherData, setWeatherData }) => {
   const { request, loading } = useFetch()
-  
+
   const [requestRangeBottom, setRequestRangeBottom] = useState<number>(0)
   const [requestRangeTop, setRequestRangeTop] = useState<number>(0)
   const [requestFilterType, setRequestFilterType] = useState<WeatherFilter>(WeatherFilter.city)
@@ -22,7 +22,7 @@ const DataBasePage: NextPage<DataBasePageProps> = ({ weatherData, setWeatherData
 
   const diagramData: any = useMemo(() => {
     if (Array.isArray(weatherData)) {
-      const data = weatherData.slice(0,100)
+      const data = weatherData.slice(0, 100)
       return data
     } else {
       return []
@@ -44,11 +44,11 @@ const DataBasePage: NextPage<DataBasePageProps> = ({ weatherData, setWeatherData
     }
 
     if (requestRangeBottom === 0 && requestRangeTop === 0 && requestFilterValue !== "") {
-      const data = await request(`${URL_LABS_SERVER}/weather?${QueryFilterLogic(requestFilterType, requestFilterValue)}`)
+      const data = await request(`${URL_LABS_SERVER_DEV}/weather?${QueryFilterLogic(requestFilterType, requestFilterValue)}`)
       setWeatherData(data)
     } else {
       const data = await request(
-        `${URL_LABS_SERVER}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(
+        `${URL_LABS_SERVER_DEV}/weather?${QueryRangesLogic(requestRangeBottom, requestRangeTop)}${QueryFilterLogic(
           requestFilterType,
           requestFilterValue
         )}`
@@ -59,7 +59,7 @@ const DataBasePage: NextPage<DataBasePageProps> = ({ weatherData, setWeatherData
 
   const downloadAllData = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
-    const data = await request(`${URL_LABS_SERVER}/weather?_limit=All`)
+    const data = await request(`${URL_LABS_SERVER_DEV}/weather?_limit=All`)
     setWeatherData(data)
   }
 

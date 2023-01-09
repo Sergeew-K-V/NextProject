@@ -44,7 +44,7 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
   const [trainingSet, setTrainingSet] = useState({
     rate: 0.1,
     iterations: 20000,
-    error: 0.0003,
+    error: 0.05,
   })
 
   const [neuralNetwork, setNeuralNetwork] = useState<any>()
@@ -67,36 +67,35 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
 
   const NetworkHandler = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
-    if(Array.isArray(weatherData)){
-      
-    const neuralNetwork = new Architect.Perceptron(4, 3, 1)
-    const trainer = new Trainer(neuralNetwork)
+    if (Array.isArray(weatherData)) {
+      const neuralNetwork = new Architect.Perceptron(4, 3, 1)
+      const trainer = new Trainer(neuralNetwork)
 
-    const normalisatedData = weatherData?.map((el) => {
-      return MakeNormalisation(el)
-    })
+      const normalisatedData = weatherData?.map((el) => {
+        return MakeNormalisation(el)
+      })
 
-    if (!normalisatedData) return ""
+      if (!normalisatedData) return ""
 
-    const maxLength = normalisatedData?.length
-    let little = 0
-    if (maxLength) {
-      little = maxLength / 5
-    }
-    const trainingPart = normalisatedData?.slice(Math.round(little), maxLength)
+      const maxLength = normalisatedData?.length
+      let little = 0
+      if (maxLength) {
+        little = maxLength / 5
+      }
+      const trainingPart = normalisatedData?.slice(Math.round(little), maxLength)
 
-    const testingPart = normalisatedData?.slice(trainingPart?.length, maxLength)
+      const testingPart = normalisatedData?.slice(trainingPart?.length, maxLength)
 
-    const result = trainer.train(trainingPart as Trainer.TrainingSet, trainingSet)
+      const result = trainer.train(trainingPart as Trainer.TrainingSet, trainingSet)
 
-    const error = trainer.test(testingPart as Trainer.TrainingSet, trainingSet)
-    setTestError(error.error)
+      const error = trainer.test(testingPart as Trainer.TrainingSet, trainingSet)
+      setTestError(error.error)
 
-    setNeuralNetwork({ ...neuralNetwork })
-    setTrainerResult({ ...result })
-    setStatus({ ...status, trained: true })
-    }else{
-      return ''
+      setNeuralNetwork({ ...neuralNetwork })
+      setTrainerResult({ ...result })
+      setStatus({ ...status, trained: true })
+    } else {
+      return ""
     }
   }
 
@@ -185,7 +184,7 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
         setStatus({ ...status, selected: false })
       }
     }
-  }, [selectedAssets, form, status, isForm])
+  }, [selectedAssets, form, isForm])
 
   return (
     <>
