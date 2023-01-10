@@ -4,8 +4,8 @@ import { QueryRangesLogic } from "../../utils"
 export { default } from "./Labs"
 
 export async function getStaticProps() {
-  const url = process.env.NEXT_PUBLIC_SERVER_URL
-  const res = await fetch(`${url}/weather?${QueryRangesLogic(0, 0)}`)
+  const url = `${URL_LABS_SERVER}/weather?${QueryRangesLogic(0, 0)}`
+  const res = await fetch(url)
   const preloadWeatherData = await res.json()
   return {
     props: {
