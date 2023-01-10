@@ -33,6 +33,7 @@ const NeuralNetworkPage: NextPage<NeuralNetworkPageProps> = ({ weatherData }) =>
     normalised: false,
     filled: false,
   })
+  console.log(process.env.NEXT_PUBLIC_SERVER_URL)
 
   const [form, setForm] = useState({
     lat: 0,
