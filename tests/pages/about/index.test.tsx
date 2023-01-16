@@ -8,7 +8,8 @@ describe("About page", () => {
     render(<About />)
     const headerText = "About Page"
     const heading = screen.getByRole("heading")
-
+    const paragrahp = screen.getByTestId("parn")
+    expect(paragrahp).toHaveTextContent("This app about how I been learing Next JS.")
     expect(heading).toHaveTextContent(headerText)
   })
 })
